@@ -13,6 +13,5 @@ for specific periods.
 
 ## User stories
 - I want to be able to add an expense (or income) to my tracker.
-- I want to be able to edit any expense records.
-- I want to be able to view a list of my expenses in a specific period.
+- I want to be able to view a list of my transactions in a specific period.
 - I want to be able to see the total expense (or income) of a specific period.
