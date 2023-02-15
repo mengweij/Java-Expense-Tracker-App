@@ -1,8 +1,11 @@
 package ui;
 
 import model.*;
-import model.Exceptions.InvalidInputException;
+import model.exception.InvalidInputException;
+import model.exception.NullRecordException;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -18,8 +21,9 @@ public class ExpenseTrackerApp {
     private LocalDate date;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-    //TODO: improve the regex
-    private final Pattern pattern = Pattern.compile("[0-9]{4}-[0-9]{2}");
+    private final Pattern pattern = Pattern.compile("20[0-2]\\d-(0[0-9]|1[0-2])");
+    private final NumberFormat numberFormatter = new DecimalFormat("#0.00");
+
 
     // EFFECTS: run this app
     public ExpenseTrackerApp() {
@@ -30,7 +34,7 @@ public class ExpenseTrackerApp {
     //EFFECTS: process user input
     public void runExpenseTracker() {
         boolean keepGoing = true;
-        String command = null;
+        String command;
 
         try {
             initialize();
@@ -97,9 +101,17 @@ public class ExpenseTrackerApp {
         commandA = commandA.toLowerCase();
 
         if (commandA.equals("e")) {
-            doAddExpense();
+            try {
+                doAddExpense();
+            } catch (NullRecordException e) {
+                doAddRecord();
+            }
         } else if (commandA.equals("i")) {
-            doAddIncome();
+            try {
+                doAddIncome();
+            } catch (NullRecordException e) {
+                doAddRecord();
+            }
         } else {
             invalidInput();
             doAddRecord();
@@ -108,18 +120,31 @@ public class ExpenseTrackerApp {
 
     //MODIFIES: this
     //EFFECTS: add an income record
-    private void doAddIncome() {
+    private void doAddIncome() throws NullRecordException {
         System.out.println("Enter how much you earn: $");
 
-        double amount = Double.parseDouble(input.next());
-        Income newIncome = new Income(amount);
-        newIncome = doClassifyIncome(newIncome);
+        double amount;
+        try {
+            amount = Double.parseDouble(input.next());
 
-        boolean statusOfAddAmt = bs.addRecord(newIncome);
-        if (statusOfAddAmt) {
-            System.out.println("Successfully added! Current balance is $" + bs.getBalance());
-        } else {
-            invalidInput();
+            Income newIncome = new Income(amount);
+            newIncome = doClassifyIncome(newIncome);
+            if (newIncome == null) {
+                throw new NullRecordException();
+            }
+
+            boolean statusOfAddAmt = bs.addRecord(newIncome);
+            if (statusOfAddAmt) {
+                StringBuilder res = new StringBuilder();
+                res.append("Successfully added! Your current balance is $");
+                res.append(numberFormatter.format(bs.getBalance()));
+                System.out.println(res);
+            } else {
+                invalidInput();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter valid numbers.");
+            doAddRecord();
         }
     }
 
@@ -132,30 +157,48 @@ public class ExpenseTrackerApp {
         }
         String category = input.next();
         category = category.toUpperCase();
-        IncomeCategory categoryNormalized = IncomeCategory.valueOf(category);
-        for (IncomeCategory i : IncomeCategory.values()) {
-            if (i == categoryNormalized) {
-                newIncome.classify(i);
-                return newIncome;
+
+        IncomeCategory categoryNormalized;
+        try {
+            categoryNormalized = IncomeCategory.valueOf(category);
+            for (IncomeCategory i : IncomeCategory.values()) {
+                if (i == categoryNormalized) {
+                    newIncome.classify(i);
+                    return newIncome;
+                }
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Not a valid category. Try again!");
         }
         return null;
     }
 
     //MODIFIES: this
     //EFFECTS: add an expense record
-    private void doAddExpense() {
+    private void doAddExpense() throws NullRecordException {
         System.out.println("Enter how much you cost: $");
+    
+        double amount;
+        try {
+            amount = Double.parseDouble(input.next());
+            Expense newExpense = new Expense(amount);
+            newExpense = doClassifyExpense(newExpense);
+            if (newExpense == null) {
+                throw new NullRecordException();
+            }
 
-        double amount = Double.parseDouble(input.next());
-        Expense newExpense = new Expense(amount);
-        newExpense = doClassifyExpense(newExpense);
-
-        boolean statusOfAddAmt = bs.addRecord(newExpense);
-        if (statusOfAddAmt) {
-            System.out.println("Successfully added! Current balance is $" + bs.getBalance());
-        } else {
-            invalidInput();
+            boolean statusOfAddAmt = bs.addRecord(newExpense);
+            if (statusOfAddAmt) {
+                StringBuilder res = new StringBuilder();
+                res.append("Successfully added! Your current balance is $");
+                res.append(numberFormatter.format(bs.getBalance()));
+                System.out.println(res);
+            } else {
+                invalidInput();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter valid numbers.");
+            doAddRecord();
         }
     }
 
@@ -168,12 +211,17 @@ public class ExpenseTrackerApp {
         }
         String category = input.next();
         category = category.toUpperCase();
-        ExpenseCategory categoryNormalized = ExpenseCategory.valueOf(category);
-        for (ExpenseCategory i : ExpenseCategory.values()) {
-            if (categoryNormalized == i) {
-                newExpense.classify(i);
-                return newExpense;
+        ExpenseCategory categoryNormalized;
+        try {
+            categoryNormalized = ExpenseCategory.valueOf(category);
+            for (ExpenseCategory i : ExpenseCategory.values()) {
+                if (categoryNormalized == i) {
+                    newExpense.classify(i);
+                    return newExpense;
+                }
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Not a valid category. Try again!");
         }
         return null;
     }
@@ -181,50 +229,65 @@ public class ExpenseTrackerApp {
     //MODIFIES: this
     //EFFECTS: show statistic data of the balance sheet
     private void doStatistics() {
+        yearMonth = YearMonth.now();
+        String currentYearMonth = yearMonth.toString();
+
+        statisticsMenu(currentYearMonth);
+
         String commandS;
         commandS = input.next();
         commandS = commandS.toLowerCase();
 
-        yearMonth = YearMonth.now();
-        String currentYearMonth = yearMonth.toString();
-
-        statisticsMenu();
-
-        if (commandS.equals("a")) {
-            doDisplayMonthlyRecord(currentYearMonth);
-        } else if (commandS.equals("m")) {
-            doThisMonthStat(currentYearMonth);
-        } else if (commandS.equals("o")) {
-            doMonthStat();
+        switch (commandS) {
+            case "a":
+                doDisplayMonthlyRecord(currentYearMonth);
+                break;
+            case "m":
+                doThisMonthStat(currentYearMonth);
+                break;
+            case "o":
+                doMonthStat();
+                break;
         }
     }
 
     //EFFECTS: display the statistics menu for users
-    private void statisticsMenu() {
-        yearMonth = YearMonth.now();
-        String currentYearMonth = yearMonth.toString();
+    private void statisticsMenu(String currentYearMonth) {
+        StringBuilder res = new StringBuilder();
+        res.append("In this month, your total balance is $");
+        res.append(numberFormatter.format(bs.totalBalanceByMonth(currentYearMonth)));
+        res.append(":\n\tTotal expense: ");
+        res.append(numberFormatter.format(bs.totalExpenseByMonth(currentYearMonth)));
+        res.append("\n\tTotal income: ");
+        res.append(numberFormatter.format(bs.totalIncomeByMonth(currentYearMonth)));
+        System.out.println(res);
 
-        System.out.println("In this month, your total balance is $" + bs.totalBalanceByMonth(currentYearMonth) + ":");
-        System.out.println("\tTotal expense: " + bs.totalExpenseByMonth(currentYearMonth));
-        System.out.println("\tTotal income: " + bs.totalIncomeByMonth(currentYearMonth));
         System.out.println("\nSee all records of this month? -> a");
         System.out.println("Know more about this month? -> m");
         System.out.println("Look at other month? -> o");
         System.out.println("Any other keys back to main menu.");
     }
 
+    //MODIFIES: this
+    //EFFECTS: show statistic data of current month
     private void doThisMonthStat(String currentYearMonth) {
         StringBuilder res = new StringBuilder();
+
+        date = LocalDate.now();
         int daysPast = date.getDayOfMonth();
         double averageExp = bs.totalExpenseByMonth(currentYearMonth) / daysPast;
         double averageInc = bs.totalIncomeByMonth(currentYearMonth) / daysPast;
-        res.append("In " + currentYearMonth + ", your daily average expense is ");
-        res.append(averageExp);
+        res.append("In ").append(currentYearMonth).append(", your daily average expense is ");
+        res.append(numberFormatter.format(averageExp));
         res.append(";\nand the daily average income is ");
-        res.append(averageInc);
-        res.append(".");
+        res.append(numberFormatter.format(averageInc));
+        res.append(".\n");
         if (averageExp == averageInc) {
-            res.append("Your are perfectly balanced!");
+            if (averageExp == 0) {
+                res.append("No data can be analysed.");
+            } else {
+                res.append("Your are perfectly balanced!");
+            }
         } else if (averageExp > averageInc) {
             res.append("Try to be more economic!");
         } else {
@@ -236,32 +299,32 @@ public class ExpenseTrackerApp {
     //MODIFIES: this
     //EFFECTS: show statistic data of a given month
     private void doMonthStat() {
-        boolean keepGoing = true;
-
         System.out.println("At which year and month you wanna have a look?");
         System.out.println("Type in the format of 'yyyy-mm'");
 
-        while (keepGoing) {
-            if (input.hasNext(pattern)) {
-                String commandM = input.next();
-                System.out.println("In " + commandM + ", your balance is " + bs.totalBalanceByMonth(commandM) + ":");
-                System.out.println("\tTotal expense: " + bs.totalExpenseByMonth(commandM));
-                System.out.println("\tTotal income: " + bs.totalIncomeByMonth(commandM));
-                doDisplayMonthlyRecord(commandM);
-            } else {
-                invalidInput();
-            }
+        if (input.hasNext(pattern)) {
+            String commandM = input.next();
+            StringBuilder res = new StringBuilder();
+            res.append("In ").append(commandM).append(", your balance is ");
+            res.append(numberFormatter.format(bs.totalBalanceByMonth(commandM)));
+            res.append(":");
+            res.append("\tTotal expense: ");
+            res.append(numberFormatter.format(bs.totalExpenseByMonth(commandM)));
+            res.append("\tTotal income: ");
+            res.append(numberFormatter.format(bs.totalIncomeByMonth(commandM)));
+            System.out.println(res);
+
+            doDisplayMonthlyRecord(commandM);
         }
     }
 
     //MODIFIES: this
     //EFFECTS: display all records of a given month
-    private void doDisplayMonthlyRecord(String yyyymm) {
-        List<Record> expenseList = bs.listByMonth("expense", yyyymm);
-        List<Record> incomeList = bs.listByMonth("income", yyyymm);
+    private void doDisplayMonthlyRecord(String yearAndMonth) {
+        List<Record> expenseList = bs.listByMonth("expense", yearAndMonth);
+        List<Record> incomeList = bs.listByMonth("income", yearAndMonth);
 
         doDisplayExpense(expenseList);
-        System.out.println("\n");
         doDisplayIncome(incomeList);
     }
 
@@ -278,9 +341,10 @@ public class ExpenseTrackerApp {
             System.out.println("All income records:");
             for (Record i : incomeList) {
                 incStr.append(orderNum++);
-                incStr.append(". " + i.getDate() + " ");
-                incStr.append(i.getAmount());
-                incStr.append(" " + i.getCategory());
+                incStr.append(". ").append(i.getDate()).append(" ");
+                incStr.append(numberFormatter.format(i.getAmount()));
+                incStr.append(" ").append(i.getCategory());
+                incStr.append("\n");
             }
             System.out.println(incStr);
         }
@@ -299,9 +363,10 @@ public class ExpenseTrackerApp {
             System.out.println("All expense records:");
             for (Record i : expenseList) {
                 epStr.append(orderNum++);
-                epStr.append(". " + i.getDate() + " ");
-                epStr.append(i.getAmount());
-                epStr.append(" " + i.getCategory());
+                epStr.append(". ").append(i.getDate()).append(" ");
+                epStr.append(numberFormatter.format(i.getAmount()));
+                epStr.append(" ").append(i.getCategory());
+                epStr.append("\n");
             }
             System.out.println(epStr);
         }

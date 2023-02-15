@@ -17,14 +17,14 @@ public class IncomeTest extends ExpenseTest{
     @Test
     void testClassify() {
         inc.classify(GENERAL);
-        assertEquals("general", inc.getCategory());
+        assertEquals("GENERAL", inc.getCategory());
     }
 
     @Test
     void testReclassify() {
         inc.classify(GENERAL);
         inc.reClassify(SALARY);
-        assertEquals("salary", inc.getCategory());
+        assertEquals("SALARY", inc.getCategory());
     }
 
 }
