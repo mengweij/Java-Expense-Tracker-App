@@ -20,11 +20,4 @@ public class IncomeTest extends ExpenseTest{
         assertEquals("GENERAL", inc.getCategory());
     }
 
-    @Test
-    void testReclassify() {
-        inc.classify(GENERAL);
-        inc.reClassify(SALARY);
-        assertEquals("SALARY", inc.getCategory());
-    }
-
 }

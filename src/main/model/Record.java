@@ -1,22 +1,28 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public interface Record {
+
     //MODIFIES: this
-    //EFFECTS: add a category to a record
+    //EFFECTS: set a tempID
+    void setTempID(int id);
+
+    //MODIFIES: this
+    //EFFECTS: add category to a record
     void classify(ExpenseCategory expenseCategory);
 
     //MODIFIES: this
     //EFFECTS: reset the amount
     void resetAmount(double amount);
 
-    //MODIFIES: this
-    //EFFECTS: change the category
-    void reclassify(ExpenseCategory expenseCategory);
-
     //REQUIRES: the format of newDate must be yyyy-mm-dd
     //MODIFIES: this
     //EFFECTS: reset the date of transaction
+    // the timeID also changes
     void resetDate(String newDate);
+
+    int getTempID();
 
     long getTimeID();
 
@@ -29,4 +35,6 @@ public interface Record {
     String getDate();
 
     String getCategory();
+
+    LocalDateTime getDateTime();
 }

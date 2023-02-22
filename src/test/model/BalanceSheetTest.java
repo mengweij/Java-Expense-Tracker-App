@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BalanceSheetTest {
     BalanceSheet testbs;
@@ -26,7 +25,7 @@ class BalanceSheetTest {
 
     @Test
     void testAddRecordOfExpense() {
-        Expense ep = new Expense(10.00);
+        Expense ep = new Expense(10);
         testbs.addRecord(ep);
         assertEquals(-10.00, testbs.getBalance());
         assertEquals(1, testbs.getNumOfRecords());
@@ -57,39 +56,63 @@ class BalanceSheetTest {
     }
 
     @Test
-    //TODO: to understand why temp.equals(inc) fails
-    void testFetchRecordOfIncome() {
+    void testFetchIncome() {
         Record inc = new Income(10.00);
-        //Record ep = new Expense(11.00);
-        //testbs.addRecord(ep);
+        inc.setTempID(1);
         testbs.addRecord(inc);
-        long incTimeID = inc.getTimeID();
-        Record temp = testbs.fetchRecord(incTimeID);
-        //assertTrue(temp.equals(inc));
-        assertEquals(10, temp.getAmount());
-        assertEquals(inc.getTimeID(), temp.getTimeID());
+        Record testInc = testbs.fetchIncome(1);
+        assertTrue(testbs.getIncomeList().contains(testInc));
     }
 
     @Test
-    void testFetchRecordOfExpense() {
-        Expense ep1 = new Expense(5);
-        //Expense ep2 = new Expense(10);
-        //Expense ep3 = new Expense(100);
-        testbs.addRecord(ep1);
-        //testbs.addRecord(ep2);
-        //testbs.addRecord(ep3);
-        long epTimeID = ep1.getTimeID();
-        Record temp = testbs.fetchRecord(epTimeID);
-        assertEquals(5, temp.getAmount());
+    void testFetchIncomeAtEndOfArray() {
+        Income inc1 = new Income(100);
+        Income inc2 = new Income(1000);
+        inc1.setTempID(2);
+        inc2.setTempID(4);
+        testbs.addRecord(inc1);
+        testbs.addRecord(inc2);
+
+        Record testInc = testbs.fetchIncome(4);
+        assertTrue(testbs.getIncomeList().contains(testInc));
     }
 
     @Test
-    void testFetchRecordFailure() {
-        Expense ep1 = new Expense(5);
-        testbs.addRecord(ep1);
-        assertEquals(null, testbs.fetchRecord(0000));
+    void testFetchIncomeNull() {
+        Record nullInc = testbs.fetchIncome(1);
+        assertNull(nullInc);
     }
 
+    @Test
+    void testFetchExpense() {
+        Expense ep1 = new Expense(5);
+        ep1.setTempID(100);
+        testbs.addRecord(ep1);
+        Record testEp1 = testbs.fetchExpense(100);
+        assertTrue(testbs.getExpenseList().contains(testEp1));
+    }
+
+    @Test
+    void testFetchExpenseNull() {
+        Record nullEp = testbs.fetchExpense(2);
+        assertNull(nullEp);
+    }
+
+    @Test
+    void testFetchExpenseAtEndOfArray() {
+        Expense ep1 = new Expense(5);
+        Expense ep2 = new Expense(10);
+        Expense ep3 = new Expense(100);
+        ep1.setTempID(0);
+        ep2.setTempID(1);
+        ep3.setTempID(2);
+        testbs.addRecord(ep1);
+        testbs.addRecord(ep2);
+        testbs.addRecord(ep3);
+
+        Record testEp = testbs.fetchExpense(2);
+        assertTrue(testbs.getExpenseList().contains(testEp));
+    }
     @Test
     void testDeleteRecordOfIncome() {
         Income inc = new Income(10.00);

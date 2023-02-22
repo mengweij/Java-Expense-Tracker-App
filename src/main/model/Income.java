@@ -13,12 +13,6 @@ public class Income extends Expense {
         this.category = incomeCategory;
     }
 
-    //MODIFIES: this
-    //EFFECTS: change the category
-    public void reClassify(IncomeCategory incomeCategory) {
-        this.category = incomeCategory;
-    }
-
     @Override
     public String getCategory() {
         return category.name();

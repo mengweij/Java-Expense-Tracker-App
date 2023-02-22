@@ -15,8 +15,6 @@ public class BalanceSheet {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
-    //EFFECTS: construct a balance sheet without any record of expense
-    // the initial balance is 0.00
     public BalanceSheet() {
         expenseList = new ArrayList<>();
         incomeList = new ArrayList<>();
@@ -29,33 +27,36 @@ public class BalanceSheet {
     //MODIFIES: this
     //EFFECTS: add a record to the balance sheet
     // return true if added successfully
-    //TODO: any situation to return false?
     public boolean addRecord(Record record) {
         if (record.getClass() == Expense.class) {
             expenseList.add(record);
-            totalExpense += ((Expense) record).getAmount();
+            totalExpense += record.getAmount();
         }
         if (record.getClass() == Income.class) {
             incomeList.add(record);
-            totalIncome += ((Income) record).getAmount();
+            totalIncome += record.getAmount();
         }
         numOfRecords += 1;
         balance = totalIncome - totalExpense;
         return true;
     }
 
-    //REQUIRES: numOfRecords > 0
-    //EFFECTS: return the record by its timeID
-    public Record fetchRecord(long id) {
-        for (int i = 0; i < expenseList.size(); i++) {
-            Expense temp = (Expense) expenseList.get(i);
-            if (temp.getTimeID() == id) {
+    //EFFECTS: return expense by its tempID
+    //  return null if no match
+    public Record fetchExpense(int id) {
+        for (Record temp : expenseList) {
+            if (temp.getTempID() == id) {
                 return temp;
             }
         }
-        for (int i = 0; i < incomeList.size(); i++) {
-            Income temp = (Income) incomeList.get(i);
-            if (temp.getTimeID() == id) {
+        return null;
+    }
+
+    //EFFECTS: return income by its tempID
+    //  return null if no match
+    public Record fetchIncome(int id) {
+        for (Record temp : incomeList) {
+            if (temp.getTempID() == id) {
                 return temp;
             }
         }
@@ -85,15 +86,15 @@ public class BalanceSheet {
         int month = callMonth.getMonthValue();
 
         if (className.equals("expense")) {
-            for (int i = 0; i < expenseList.size(); i++) {
-                if (expenseList.get(i).getMonth() == month && expenseList.get(i).getYear() == year) {
-                    res.add(expenseList.get(i));
+            for (Record record : expenseList) {
+                if (record.getMonth() == month && record.getYear() == year) {
+                    res.add(record);
                 }
             }
         } else if (className.equals("income")) {
-            for (int i = 0; i < incomeList.size(); i++) {
-                if (incomeList.get(i).getMonth() == month && incomeList.get(i).getYear() == year) {
-                    res.add(incomeList.get(i));
+            for (Record record : incomeList) {
+                if (record.getMonth() == month && record.getYear() == year) {
+                    res.add(record);
                 }
             }
         }
@@ -145,5 +146,12 @@ public class BalanceSheet {
         return expenseList.size() + incomeList.size();
     }
 
+    public List<Record> getExpenseList() {
+        return expenseList;
+    }
+
+    public List<Record> getIncomeList() {
+        return incomeList;
+    }
 
 }
