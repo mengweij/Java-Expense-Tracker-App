@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDateTime;
 
+// Represents a transaction record, which could be expense or income
 public interface Record {
 
     //MODIFIES: this

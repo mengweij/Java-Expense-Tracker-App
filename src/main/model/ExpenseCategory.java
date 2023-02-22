@@ -1,5 +1,6 @@
 package model;
 
+// Represents the categories of expense record
 public enum ExpenseCategory {
     GENERAL,
     FOOD,

@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+// Represents a balance sheet with both expense and income records
+//   it maintains the number of records, total expense and income, and balance (in dollars)
 public class BalanceSheet {
     private final List<Record> expenseList;
     private final List<Record> incomeList;
