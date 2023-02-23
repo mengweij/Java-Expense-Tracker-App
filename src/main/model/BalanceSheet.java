@@ -71,7 +71,7 @@ public class BalanceSheet {
     public void deleteRecord(Record record) {
         if (record.getClass() == Expense.class) {
             expenseList.remove(record);
-        } else if (record.getClass() == Income.class) {
+        } else {
             incomeList.remove(record);
         }
     }
@@ -86,13 +86,13 @@ public class BalanceSheet {
         int year = callMonth.getYear();
         int month = callMonth.getMonthValue();
 
-        if (className.equals("expense")) {
+        if ("expense".equals(className)) {
             for (Record record : expenseList) {
                 if (record.getMonth() == month && record.getYear() == year) {
                     res.add(record);
                 }
             }
-        } else if (className.equals("income")) {
+        } else {
             for (Record record : incomeList) {
                 if (record.getMonth() == month && record.getYear() == year) {
                     res.add(record);
