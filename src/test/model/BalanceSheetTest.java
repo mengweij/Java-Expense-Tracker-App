@@ -117,8 +117,8 @@ class BalanceSheetTest {
     void testDeleteRecordOfIncome() {
         Income inc = new Income(10.00);
         testbs.addRecord(inc);
-        boolean deleteStatus = testbs.deleteRecord(inc);
-        assertTrue(deleteStatus);
+
+        testbs.deleteRecord(inc);
         assertEquals(0, testbs.getNumOfRecords());
     }
 
@@ -126,14 +126,13 @@ class BalanceSheetTest {
     void testDeleteRecordOfExpense() {
         Expense ep = new Expense(10.00);
         testbs.addRecord(ep);
+
         testbs.deleteRecord(ep);
-        boolean deleteStatus = testbs.deleteRecord(ep);
-        assertTrue(deleteStatus);
         assertEquals(0, testbs.getNumOfRecords());
     }
 
     @Test
-    void testListByMonth() {
+    void testListByMonthExpense() {
         Expense ep1 = new Expense(5);
         Expense ep2 = new Expense(10);
         Expense ep3 = new Expense(100);
@@ -147,8 +146,28 @@ class BalanceSheetTest {
         test.add(ep2);
         test.add(ep3);
         assertEquals(test, testbs.listByMonth("expense", "2023-02"));
-        assertEquals(nullList, testbs.listByMonth("income", "2023-02"));
+        assertEquals(nullList, testbs.listByMonth("expense", "2023-01"));
+        assertEquals(nullList, testbs.listByMonth("expense", "2022-02"));
+        assertEquals(nullList, testbs.listByMonth("expense", "2022-01"));
     }
+
+    @Test
+    void testListByMonthIncome() {
+        Income inc1 = new Income(100);
+        Income inc2 = new Income(1000);
+        testbs.addRecord(inc1);
+        testbs.addRecord(inc2);
+
+        List<Record> test = new ArrayList<>();
+        List<Record> nullList = new ArrayList<>();
+        test.add(inc1);
+        test.add(inc2);
+        assertEquals(test, testbs.listByMonth("income", "2023-02"));
+        assertEquals(nullList, testbs.listByMonth("income", "2023-01"));
+        assertEquals(nullList, testbs.listByMonth("income", "2022-02"));
+        assertEquals(nullList, testbs.listByMonth("income", "2022-01"));
+    }
+
 
     @Test
     void testTotalExpenseByMonth() {

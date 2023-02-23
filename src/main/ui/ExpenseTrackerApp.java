@@ -307,12 +307,8 @@ public class ExpenseTrackerApp {
                 doClassifyIncome((Income) record);
                 break;
             case "delete":
-                boolean status = bs.deleteRecord(record);
-                if (status) {
-                    System.out.println("Successfully deleted.");
-                } else {
-                    System.out.println("Oops! Something goes wrong!");
-                }
+                bs.deleteRecord(record);
+                System.out.println("Successfully deleted.");
                 break;
             default:
                 invalidInput();
@@ -361,12 +357,8 @@ public class ExpenseTrackerApp {
                 doClassifyExpense((Expense) record);
                 break;
             case "delete":
-                boolean status = bs.deleteRecord(record);
-                if (status) {
-                    System.out.println("Successfully deleted.");
-                } else {
-                    System.out.println("Oops! Something goes wrong!");
-                }
+                bs.deleteRecord(record);
+                System.out.println("Successfully deleted.");
                 break;
             default:
                 invalidInput();

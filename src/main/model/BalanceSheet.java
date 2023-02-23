@@ -68,13 +68,12 @@ public class BalanceSheet {
     //MODIFIES: this
     //EFFECTS: delete one expense or income record from the balance sheet
     // return true if deleting successfully
-    public boolean deleteRecord(Record record) {
+    public void deleteRecord(Record record) {
         if (record.getClass() == Expense.class) {
             expenseList.remove(record);
         } else if (record.getClass() == Income.class) {
             incomeList.remove(record);
         }
-        return true;
     }
 
     //TODO: improve the algorithm maybe
