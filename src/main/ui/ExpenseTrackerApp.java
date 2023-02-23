@@ -1,8 +1,8 @@
 package ui;
 
 import model.*;
-import model.exception.InvalidInputException;
-import model.exception.NullRecordException;
+import ui.exception.InvalidInputException;
+import ui.exception.NullRecordException;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
