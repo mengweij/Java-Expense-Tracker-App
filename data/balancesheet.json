@@ -1,0 +1,61 @@
+{
+    "incomes": [
+        {
+            "date": "2023-03-01",
+            "dateTime": "2023-03-01T12:09:15.132645",
+            "amount": 888,
+            "timeID": 20230301121241922,
+            "month": 3,
+            "year": 2023,
+            "tempID": 1,
+            "category": "SALARY",
+            "day": 1
+        },
+        {
+            "date": "2023-03-01",
+            "dateTime": "2023-03-01T12:13:15.339751",
+            "amount": 6000,
+            "timeID": 20230301121315339,
+            "month": 3,
+            "year": 2023,
+            "tempID": 2,
+            "category": "SECONDHAND",
+            "day": 1
+        }
+    ],
+    "expenses": [
+        {
+            "date": "2023-03-01",
+            "dateTime": "2023-03-01T12:09:06.121096",
+            "amount": 10,
+            "timeID": 20230301121241921,
+            "month": 3,
+            "year": 2023,
+            "tempID": 1,
+            "category": "FOOD",
+            "day": 1
+        },
+        {
+            "date": "2023-03-01",
+            "dateTime": "2023-03-01T12:10:29.519364",
+            "amount": 19,
+            "timeID": 20230301121241922,
+            "month": 3,
+            "year": 2023,
+            "tempID": 2,
+            "category": "SHOPPING",
+            "day": 1
+        },
+        {
+            "date": "2023-03-01",
+            "dateTime": "2023-03-01T12:12:56.138485",
+            "amount": 909,
+            "timeID": 20230301121256138,
+            "month": 3,
+            "year": 2023,
+            "tempID": 3,
+            "category": "HEALTH",
+            "day": 1
+        }
+    ]
+}

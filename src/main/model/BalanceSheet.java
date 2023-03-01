@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,40 +12,28 @@ import java.util.List;
 public class BalanceSheet {
     private final List<Record> expenseList;
     private final List<Record> incomeList;
-    private int numOfRecords;
-    private double balance;
-    private double totalExpense;
-    private double totalIncome;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
     public BalanceSheet() {
         expenseList = new ArrayList<>();
         incomeList = new ArrayList<>();
-        numOfRecords = 0;
-        balance = 0.00;
-        totalExpense = 0.00;
-        totalIncome = 0.00;
     }
 
-    //MODIFIES: this
-    //EFFECTS: add a record to the balance sheet
+    // MODIFIES: this
+    // EFFECTS: add a record to the balance sheet
     // return true if added successfully
     public boolean addRecord(Record record) {
         if (record.getClass() == Expense.class) {
             expenseList.add(record);
-            totalExpense += record.getAmount();
         }
         if (record.getClass() == Income.class) {
             incomeList.add(record);
-            totalIncome += record.getAmount();
         }
-        numOfRecords += 1;
-        balance = totalIncome - totalExpense;
         return true;
     }
 
-    //EFFECTS: return expense by its tempID
+    // EFFECTS: return expense by its tempID
     //  return null if no match
     public Record fetchExpense(int id) {
         for (Record temp : expenseList) {
@@ -54,7 +44,7 @@ public class BalanceSheet {
         return null;
     }
 
-    //EFFECTS: return income by its tempID
+    // EFFECTS: return income by its tempID
     //  return null if no match
     public Record fetchIncome(int id) {
         for (Record temp : incomeList) {
@@ -65,9 +55,9 @@ public class BalanceSheet {
         return null;
     }
 
-    //MODIFIES: this
-    //EFFECTS: delete one expense or income record from the balance sheet
-    // return true if deleting successfully
+    // MODIFIES: this
+    // EFFECTS: delete one expense or income record from the balance sheet
+    //  return true if deleting successfully
     public void deleteRecord(Record record) {
         if (record.getClass() == Expense.class) {
             expenseList.remove(record);
@@ -76,9 +66,10 @@ public class BalanceSheet {
         }
     }
 
-    //TODO: improve the algorithm maybe
-    //REQUIRES: input must be in the format of yyyy-mm
-    //EFFECTS: return a list of expense or income of a given month and year
+
+    // REQUIRES: input must be in the format of yyyy-mm
+    // EFFECTS: return a list of expense or income of a given month and year
+    // TODO: improve the algorithm maybe
     public List<Record> listByMonth(String className, String yyyymm) {
         List<Record> res = new ArrayList<>();
 
@@ -102,8 +93,8 @@ public class BalanceSheet {
         return res;
     }
 
-    //REQUIRES: input must be in the format of yyyy-mm
-    //EFFECTS: calculate the total expense of a given month and year
+    // REQUIRES: input must be in the format of yyyy-mm
+    // EFFECTS: calculate the total expense of a given month and year
     public double totalExpenseByMonth(String yyyymm) {
         List<Record> list = listByMonth("expense", yyyymm);
         double total = 0.00;
@@ -113,8 +104,8 @@ public class BalanceSheet {
         return total;
     }
 
-    //REQUIRES: input must be in the format of yyyy-mm
-    //EFFECTS: calculate the total income of a given month and year
+    // REQUIRES: input must be in the format of yyyy-mm
+    // EFFECTS: calculate the total income of a given month and year
     public double totalIncomeByMonth(String yyyymm) {
         List<Record> list = listByMonth("income", yyyymm);
         double total = 0.00;
@@ -124,26 +115,45 @@ public class BalanceSheet {
         return total;
     }
 
-    //REQUIRES: input must be in the format of yyyy-mm
-    //EFFECTS: calculate the balance of a given month and year
+    // REQUIRES: input must be in the format of yyyy-mm
+    // EFFECTS: calculate the balance of a given month and year
     public double totalBalanceByMonth(String yyyymm) {
         return this.totalIncomeByMonth(yyyymm) - this.totalExpenseByMonth(yyyymm);
     }
 
+    // EFFECTS: returns this as JSON object
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("expenses", expenseList);
+        json.put("incomes", incomeList);
+        return json;
+    }
 
-    public double getTotalExpense() {
+    // EFFECTS: calculates the total expense
+    public double calTotalExpense() {
+        double totalExpense = 0;
+        for (Record expense : expenseList) {
+            totalExpense += expense.getAmount();
+        }
         return totalExpense;
     }
 
-    public double getTotalIncome() {
+    // EFFECTS: calculates the total expense
+    public double calTotalIncome() {
+        double totalIncome = 0;
+        for (Record income : incomeList) {
+            totalIncome += income.getAmount();
+        }
         return totalIncome;
     }
 
-    public double getBalance() {
-        return balance;
+    // EFFECTS: calculates the balance amount
+    public double calBalance() {
+        return calTotalIncome() - calTotalExpense();
     }
 
-    public int getNumOfRecords() {
+    // EFFECTS: calculates the number of records
+    public int calNumOfRecords() {
         return expenseList.size() + incomeList.size();
     }
 

@@ -10,37 +10,40 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BalanceSheetTest {
     BalanceSheet testbs;
+    Expense ep;
+
     @BeforeEach
     void setUp () {
         testbs = new BalanceSheet();
+        ep = new Expense(10);
     }
 
     @Test
     void testConstructor() {
-        assertEquals(0.00, testbs.getBalance());
-        assertEquals(0, testbs.getNumOfRecords());
-        assertEquals(0.00, testbs.getTotalExpense());
-        assertEquals(0.00, testbs.getTotalIncome());
+        assertEquals(0.00, testbs.calBalance());
+        assertEquals(0, testbs.calNumOfRecords());
+        assertEquals(0.00, testbs.calTotalExpense());
+        assertEquals(0.00, testbs.calTotalIncome());
     }
 
     @Test
     void testAddRecordOfExpense() {
-        Expense ep = new Expense(10);
+        //Expense ep = new Expense(10);
         testbs.addRecord(ep);
-        assertEquals(-10.00, testbs.getBalance());
-        assertEquals(1, testbs.getNumOfRecords());
-        assertEquals(10.00, testbs.getTotalExpense());
-        assertEquals(0.00, testbs.getTotalIncome());
+        assertEquals(-10.00, testbs.calBalance());
+        assertEquals(1, testbs.calNumOfRecords());
+        assertEquals(10.00, testbs.calTotalExpense());
+        assertEquals(0.00, testbs.calTotalIncome());
     }
 
     @Test
     void testAddRecordOfIncome() {
         Income inc = new Income(10.00);
         testbs.addRecord(inc);
-        assertEquals(10.00, testbs.getBalance());
-        assertEquals(1, testbs.getNumOfRecords());
-        assertEquals(0.00, testbs.getTotalExpense());
-        assertEquals(10.00, testbs.getTotalIncome());
+        assertEquals(10.00, testbs.calBalance());
+        assertEquals(1, testbs.calNumOfRecords());
+        assertEquals(0.00, testbs.calTotalExpense());
+        assertEquals(10.00, testbs.calTotalIncome());
     }
 
     @Test
@@ -49,10 +52,10 @@ class BalanceSheetTest {
         Expense ep = new Expense(5.00);
         testbs.addRecord(ep);
         testbs.addRecord(inc);
-        assertEquals(5.00, testbs.getBalance());
-        assertEquals(2, testbs.getNumOfRecords());
-        assertEquals(5.00, testbs.getTotalExpense());
-        assertEquals(10.00, testbs.getTotalIncome());
+        assertEquals(5.00, testbs.calBalance());
+        assertEquals(2, testbs.calNumOfRecords());
+        assertEquals(5.00, testbs.calTotalExpense());
+        assertEquals(10.00, testbs.calTotalIncome());
     }
 
     @Test
@@ -119,7 +122,7 @@ class BalanceSheetTest {
         testbs.addRecord(inc);
 
         testbs.deleteRecord(inc);
-        assertEquals(0, testbs.getNumOfRecords());
+        assertEquals(0, testbs.calNumOfRecords());
     }
 
     @Test
@@ -128,7 +131,7 @@ class BalanceSheetTest {
         testbs.addRecord(ep);
 
         testbs.deleteRecord(ep);
-        assertEquals(0, testbs.getNumOfRecords());
+        assertEquals(0, testbs.calNumOfRecords());
     }
 
     @Test
@@ -136,6 +139,10 @@ class BalanceSheetTest {
         Expense ep1 = new Expense(5);
         Expense ep2 = new Expense(10);
         Expense ep3 = new Expense(100);
+        ep1.resetDate("2023-02-01");
+        ep2.resetDate("2023-02-01");
+        ep3.resetDate("2023-02-01");
+
         testbs.addRecord(ep1);
         testbs.addRecord(ep2);
         testbs.addRecord(ep3);
@@ -155,6 +162,8 @@ class BalanceSheetTest {
     void testListByMonthIncome() {
         Income inc1 = new Income(100);
         Income inc2 = new Income(1000);
+        inc1.resetDate("2023-02-22");
+        inc2.resetDate("2023-02-02");
         testbs.addRecord(inc1);
         testbs.addRecord(inc2);
 
@@ -174,12 +183,18 @@ class BalanceSheetTest {
         Expense ep1 = new Expense(5);
         Expense ep2 = new Expense(10);
         Expense ep3 = new Expense(100);
+        ep1.resetDate("2023-02-01");
+        ep2.resetDate("2023-02-01");
+        ep3.resetDate("2023-02-01");
         testbs.addRecord(ep1);
         testbs.addRecord(ep2);
         testbs.addRecord(ep3);
 
         Income inc1 = new Income(100);
         Income inc2 = new Income(1000);
+        inc1.resetDate("2023-02-22");
+        inc2.resetDate("2023-02-02");
+
         testbs.addRecord(inc1);
         testbs.addRecord(inc2);
 
@@ -191,12 +206,19 @@ class BalanceSheetTest {
         Expense ep1 = new Expense(5);
         Expense ep2 = new Expense(10);
         Expense ep3 = new Expense(100);
+        ep1.resetDate("2023-02-01");
+        ep2.resetDate("2023-02-01");
+        ep3.resetDate("2023-02-01");
+
         testbs.addRecord(ep1);
         testbs.addRecord(ep2);
         testbs.addRecord(ep3);
 
         Income inc1 = new Income(100);
         Income inc2 = new Income(1000);
+        inc1.resetDate("2023-02-22");
+        inc2.resetDate("2023-02-02");
+
         testbs.addRecord(inc1);
         testbs.addRecord(inc2);
 
@@ -208,15 +230,60 @@ class BalanceSheetTest {
         Expense ep1 = new Expense(5);
         Expense ep2 = new Expense(10);
         Expense ep3 = new Expense(100);
+        ep1.resetDate("2023-02-01");
+        ep2.resetDate("2023-02-01");
+        ep3.resetDate("2023-02-01");
+
         testbs.addRecord(ep1);
         testbs.addRecord(ep2);
         testbs.addRecord(ep3);
 
         Income inc1 = new Income(100);
         Income inc2 = new Income(1000);
+        inc1.resetDate("2023-02-22");
+        inc2.resetDate("2023-02-02");
+
         testbs.addRecord(inc1);
         testbs.addRecord(inc2);
 
         assertEquals(1100 - 115, testbs.totalBalanceByMonth("2023-02"));
+    }
+
+    @Test
+    void testCalTotalExpense() {
+        Expense ep1 = new Expense(5);
+        Expense ep2 = new Expense(10);
+        Expense ep3 = new Expense(100);
+        testbs.addRecord(ep1);
+        testbs.addRecord(ep2);
+        testbs.addRecord(ep3);
+        assertEquals(5 + 10 + 100, testbs.calTotalExpense());
+    }
+
+    @Test
+    void testCalTotalIncome() {
+        Income inc1 = new Income(100);
+        Income inc2 = new Income(1000);
+        testbs.addRecord(inc1);
+        testbs.addRecord(inc2);
+        assertEquals(100 + 1000, testbs.calTotalIncome());
+    }
+
+    @Test
+    void testCalBalance() {
+        Expense ep1 = new Expense(50);
+        Income inc1 = new Income(100);
+        testbs.addRecord(ep1);
+        testbs.addRecord(inc1);
+        assertEquals(100 - 50, testbs.calBalance());
+    }
+
+    @Test
+    void testCalNumOfRecords() {
+        Expense ep1 = new Expense(50);
+        Income inc1 = new Income(100);
+        testbs.addRecord(ep1);
+        testbs.addRecord(inc1);
+        assertEquals(2, testbs.calNumOfRecords());
     }
 }

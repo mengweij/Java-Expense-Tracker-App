@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
 
 // Represents a transaction record, which could be expense or income
@@ -23,6 +25,11 @@ public interface Record {
     // the timeID also changes
     void resetDate(String newDate);
 
+    void resetDateTime(LocalDateTime dateTime);
+
+    //EFFECTS: returns this as JSON object
+    JSONObject toJson();
+
     int getTempID();
 
     long getTimeID();
@@ -35,7 +42,7 @@ public interface Record {
 
     String getDate();
 
-    String getCategory();
+    String getCategoryName();
 
     LocalDateTime getDateTime();
 }

@@ -1,7 +1,10 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 // Represents an expense record, with amount (in dollars), date, time, category, a timeID, and a tempID
@@ -9,64 +12,50 @@ public class Expense implements Record {
     private double amount;
     private LocalDateTime dateTime;
     private ExpenseCategory category;
-    private String date;
     private long timeID; //17 digits
     private int tempID;
-    private int year;
-    private int month;
-    private int day;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final DateTimeFormatter formatterWithTime = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
     public Expense(double amount) {
         this.amount = amount;
-
-        LocalDateTime now = LocalDateTime.now();
-        this.dateTime = now;
-        this.date = now.format(formatter);
-        this.year = now.getYear();
-        this.month = now.getMonthValue();
-        this.day = now.getDayOfMonth();
-
-        String dateWithTime = now.format(formatterWithTime);
+        this.dateTime = LocalDateTime.now();
+        String dateWithTime = dateTime.format(formatterWithTime);
         this.timeID = Long.parseLong(dateWithTime);
-
         this.tempID = 0;
     }
 
-    //MODIFIES: this
-    //EFFECTS: set a tempID
+    // MODIFIES: this
+    // EFFECTS: sets a tempID
     @Override
     public void setTempID(int id) {
         tempID = id;
     }
 
-    //MODIFIES: this
-    //EFFECTS: add a category to a record
+    // MODIFIES: this
+    // EFFECTS: adds a category to a record
     @Override
     public void classify(ExpenseCategory expenseCategory) {
         this.category = expenseCategory;
     }
 
-    //MODIFIES: this
-    //EFFECTS: reset the amount
+    // MODIFIES: this
+    // EFFECTS: resets the amount
     @Override
     public void resetAmount(double amount) {
         this.amount = amount;
     }
 
-    //REQUIRES: the format of newDate must be yyyy-mm-dd
-    //MODIFIES: this
-    //EFFECTS: reset the date of transaction
+    // REQUIRES: the format of newDate must be yyyy-mm-dd
+    // MODIFIES: this
+    // EFFECTS: resets the date of transaction
     // the timeID also changes
     @Override
-    public void resetDate(String newDate) {
-        LocalDate newNow = LocalDate.parse(newDate, formatter);
-        this.date = newNow.format(formatter);
-        this.year = newNow.getYear();
-        this.month = newNow.getMonthValue();
-        this.day = newNow.getDayOfMonth();
+    public void resetDate(String date) {
+        LocalDate newDate = LocalDate.parse(date, formatter);
+        LocalTime prevTime = dateTime.toLocalTime();
+        this.dateTime = LocalDateTime.of(newDate, prevTime);
 
         String timeIDStr = Long.toString(timeID);
         char[] timeIDCharArray = new char[17];
@@ -77,20 +66,34 @@ public class Expense implements Record {
         }
         String lastNineDigitsStr = sb.toString();
         long lastNineDigits = Long.parseLong(lastNineDigitsStr);
-        long firstEightDigits = year * 10000L + month * 100L + day;
+        long firstEightDigits = getYear() * 10000L + getMonth() * 100L + getDay();
         this.timeID = firstEightDigits * (long) Math.pow(10, 9) + lastNineDigits;
+    }
+
+    public void resetDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    // EFFECTS: returns this as JSON object
+    @Override
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("amount", amount);
+        jsonObject.put("category", category);
+        jsonObject.put("dateTime", dateTime.toString());
+        return jsonObject;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public String getCategory() {
+    public String getCategoryName() {
         return category.name();
     }
 
     public String getDate() {
-        return date;
+        return dateTime.format(formatter);
     }
 
     public int getTempID() {
@@ -102,18 +105,20 @@ public class Expense implements Record {
     }
 
     public int getYear() {
-        return year;
+        return dateTime.getYear();
     }
 
     public int getDay() {
-        return day;
+        return dateTime.getDayOfMonth();
     }
 
     public int getMonth() {
-        return month;
+        return dateTime.getMonthValue();
     }
 
     public LocalDateTime getDateTime() {
         return dateTime;
     }
+
+
 }

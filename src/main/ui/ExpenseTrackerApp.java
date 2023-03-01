@@ -1,9 +1,13 @@
 package ui;
 
 import model.*;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 import ui.exception.InvalidInputException;
 import ui.exception.NullRecordException;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -14,17 +18,21 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-//Expense tracker App
+// Expense tracker App
+// TODO: how to add citation?
 public class ExpenseTrackerApp {
     private BalanceSheet bs;
     private Scanner input;
     private YearMonth currentYearMonth;
+    private JsonReader jsonReader;
+    private JsonWriter jsonWriter;
 
-    private final String yearAndMonthFormat = "20[0-2]\\d-(0[0-9]|1[0-2])";
-    private final Pattern yearAndMonthPattern = Pattern.compile("20[0-2]\\d-(0[0-9]|1[0-2])");
-    private final Pattern datePattern = Pattern.compile("([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))");
-    private final Pattern orderNumPattern = Pattern.compile("\\d|\\d\\d");
-    private final NumberFormat numberFormatter = new DecimalFormat("#0.00");
+    private static final String JSON_STORE_ADDRESS = "./data/balancesheet.json";
+    private static final String yearAndMonthFormat = "20[0-2]\\d-(0[0-9]|1[0-2])";
+    private static final Pattern yearAndMonthPattern = Pattern.compile("20[0-2]\\d-(0[0-9]|1[0-2])");
+    private static final Pattern datePattern = Pattern.compile("([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))");
+    private static final Pattern orderNumPattern = Pattern.compile("\\d|\\d\\d");
+    private static final NumberFormat numberFormatter = new DecimalFormat("#0.00");
 
 
     // EFFECTS: run this app
@@ -65,14 +73,18 @@ public class ExpenseTrackerApp {
         bs = new BalanceSheet();
         input = new Scanner(System.in);
         input.useDelimiter("\n");
+        jsonWriter = new JsonWriter(JSON_STORE_ADDRESS);
+        jsonReader = new JsonReader(JSON_STORE_ADDRESS);
     }
 
     //EFFECTS: display the main menu for users
     private void displayMainMenu() {
         System.out.println("\nWhat do you want to do?");
         System.out.println("\ta -> add a new transaction");
-        System.out.println("\ts -> see some statistics");
-        System.out.println("\tl -> look back at your records or edit them");
+        System.out.println("\tg -> get some statistics");
+        System.out.println("\tr -> review or edit your records");
+        System.out.println("\ts -> save your records");
+        System.out.println("\tl -> load your records");
         System.out.println("\tq -> quit");
     }
 
@@ -82,15 +94,44 @@ public class ExpenseTrackerApp {
             case "a":
                 doAddRecord();
                 break;
-            case "s":
+            case "g":
                 doShowStat();
                 break;
-            case "l":
+            case "r":
                 doShowRecords();
+                break;
+            case "s":
+                saveData();
+                break;
+            case "l":
+                loadData();
                 break;
             default:
                 invalidInput();
                 break;
+        }
+    }
+
+    // EFFECTS: saves the balance sheet to file
+    private void saveData() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(bs);
+            jsonWriter.close();
+            System.out.println("Saved your data to " + JSON_STORE_ADDRESS);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE_ADDRESS);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads balance sheet from file
+    private void loadData() {
+        try {
+            bs = jsonReader.read();
+            System.out.println("Loaded your data from " + JSON_STORE_ADDRESS);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE_ADDRESS);
         }
     }
 
@@ -140,7 +181,7 @@ public class ExpenseTrackerApp {
             boolean statusOfAddAmt = bs.addRecord(newIncome);
             if (statusOfAddAmt) {
                 String res = "Successfully added! Your current balance is $"
-                        + numberFormatter.format(bs.getBalance());
+                        + numberFormatter.format(bs.calBalance());
                 System.out.println(res);
             } else {
                 invalidInput();
@@ -193,7 +234,7 @@ public class ExpenseTrackerApp {
             boolean statusOfAddAmt = bs.addRecord(newExpense);
             if (statusOfAddAmt) {
                 String res = "Successfully added! Your current balance is $"
-                        + numberFormatter.format(bs.getBalance());
+                        + numberFormatter.format(bs.calBalance());
                 System.out.println(res);
             } else {
                 invalidInput();
@@ -501,7 +542,7 @@ public class ExpenseTrackerApp {
                 + " "
                 + numberFormatter.format(record.getAmount())
                 + " "
-                + record.getCategory();
+                + record.getCategoryName();
         System.out.println(res);
     }
 
@@ -532,7 +573,7 @@ public class ExpenseTrackerApp {
                 incStr.append(i.getTempID());
                 incStr.append(". ").append(i.getDate()).append(" ");
                 incStr.append(numberFormatter.format(i.getAmount()));
-                incStr.append(" ").append(i.getCategory());
+                incStr.append(" ").append(i.getCategoryName());
                 incStr.append("\n");
             }
             System.out.println(incStr);
@@ -553,7 +594,7 @@ public class ExpenseTrackerApp {
                 epStr.append(i.getTempID());
                 epStr.append(". ").append(i.getDate()).append(" ");
                 epStr.append(numberFormatter.format(i.getAmount()));
-                epStr.append(" ").append(i.getCategory());
+                epStr.append(" ").append(i.getCategoryName());
                 epStr.append("\n");
             }
             System.out.println(epStr);

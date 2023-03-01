@@ -18,3 +18,7 @@ for specific periods.
 - I want to be able to see the total expense (or income) of a specific period.
 - I want to be able to save my expense tracker to file.
 - I want to be able to be able to load my expense tracker from file.
+
+## Reference
+The serialization and deserialization of JSON refer to the repository: 
+https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo

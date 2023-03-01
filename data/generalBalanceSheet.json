@@ -1,0 +1,24 @@
+{
+    "incomes": [{
+        "date": "2023-03-01",
+        "dateTime": "2023-03-01T13:42:16.479721",
+        "amount": 100,
+        "timeID": 20230301134216479,
+        "month": 3,
+        "year": 2023,
+        "tempID": 0,
+        "categoryName": "SALARY",
+        "day": 1
+    }],
+    "expenses": [{
+        "date": "2023-03-01",
+        "dateTime": "2023-03-01T13:42:16.478519",
+        "amount": 50,
+        "timeID": 20230301134216478,
+        "month": 3,
+        "year": 2023,
+        "tempID": 0,
+        "day": 1,
+        "categoryName": "FOOD"
+    }]
+}

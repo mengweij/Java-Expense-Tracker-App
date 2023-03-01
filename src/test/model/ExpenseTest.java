@@ -39,7 +39,7 @@ public class ExpenseTest {
     @Test
     void testClassify() {
         ep.classify(ExpenseCategory.GROCERY);
-        assertEquals("GROCERY", ep.getCategory());
+        assertEquals("GROCERY", ep.getCategoryName());
     }
 
     @Test

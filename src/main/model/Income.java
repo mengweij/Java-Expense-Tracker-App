@@ -15,7 +15,7 @@ public class Income extends Expense {
     }
 
     @Override
-    public String getCategory() {
+    public String getCategoryName() {
         return category.name();
     }
 }
