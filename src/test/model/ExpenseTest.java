@@ -86,31 +86,11 @@ public class ExpenseTest {
 
     @Test
     void testToJson() {
-        BalanceSheet bs = new BalanceSheet();
-        Expense ep = new Expense(500);
+        ep.resetAmount(500);
         ep.classify(ExpenseCategory.HEALTH);
         JSONObject epjson = ep.toJson();
-        BalanceSheet testBalanceSheet = new BalanceSheet();
+        String epStr = "{\"dateTime\":\"" + ep.getDateTime().toString() + "\",\"amount\":500,\"category\":\"HEALTH\"}";
+        assertEquals(epStr, epjson.toString());
 
-        try {
-            JsonWriter writer = new JsonWriter("./data/individualExpense.json");
-            writer.open();
-            writer.write(bs);
-            writer.close();
-        } catch (FileNotFoundException e) {
-            fail("FileNotFoundException is not expected");
-        }
-
-//        JsonReader reader = new JsonReader("./data/individualExpense.json");
-//        try {
-//            BalanceSheet generalBS = reader.read();
-//            List<Record> expenses = generalBS.getExpenseList();
-//            assertEquals(1, expenses.size());
-//            assertEquals(2, generalBS.calNumOfRecords());
-//            testExpense(50, "FOOD", 2023, generalBS.getExpenseList().get(0));
-//            testIncome(100, "SALARY", 2023, generalBS.getIncomeList().get(0));
-//        } catch (IOException E) {
-//            fail("IOException is not expected");
-//        }
     }
 }

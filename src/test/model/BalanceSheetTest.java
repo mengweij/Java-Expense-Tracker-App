@@ -1,5 +1,6 @@
 package model;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,281 +10,279 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BalanceSheetTest {
-    BalanceSheet testbs;
-    Expense ep;
+    BalanceSheet bs;
+    Expense ep1;
+    Expense ep2;
+    Expense ep3;
+    Income inc1;
+    Income inc2;
+    Income inc3;
 
     @BeforeEach
     void setUp () {
-        testbs = new BalanceSheet();
-        ep = new Expense(10);
+        bs = new BalanceSheet();
+
+        ep1 = new Expense(5);
+        ep2 = new Expense(10);
+        ep3 = new Expense(100);
+
+        inc1 = new Income(100);
+        inc2 = new Income(1000);
     }
 
     @Test
     void testConstructor() {
-        assertEquals(0.00, testbs.calBalance());
-        assertEquals(0, testbs.calNumOfRecords());
-        assertEquals(0.00, testbs.calTotalExpense());
-        assertEquals(0.00, testbs.calTotalIncome());
+        assertEquals(0.00, bs.calBalance());
+        assertEquals(0, bs.calNumOfRecords());
+        assertEquals(0.00, bs.calTotalExpense());
+        assertEquals(0.00, bs.calTotalIncome());
     }
 
     @Test
     void testAddRecordOfExpense() {
-        //Expense ep = new Expense(10);
-        testbs.addRecord(ep);
-        assertEquals(-10.00, testbs.calBalance());
-        assertEquals(1, testbs.calNumOfRecords());
-        assertEquals(10.00, testbs.calTotalExpense());
-        assertEquals(0.00, testbs.calTotalIncome());
+        bs.addRecord(ep2);
+        assertEquals(-10.00, bs.calBalance());
+        assertEquals(1, bs.calNumOfRecords());
+        assertEquals(10.00, bs.calTotalExpense());
+        assertEquals(0.00, bs.calTotalIncome());
     }
 
     @Test
     void testAddRecordOfIncome() {
-        Income inc = new Income(10.00);
-        testbs.addRecord(inc);
-        assertEquals(10.00, testbs.calBalance());
-        assertEquals(1, testbs.calNumOfRecords());
-        assertEquals(0.00, testbs.calTotalExpense());
-        assertEquals(10.00, testbs.calTotalIncome());
+        bs.addRecord(inc1);
+        assertEquals(100.00, bs.calBalance());
+        assertEquals(1, bs.calNumOfRecords());
+        assertEquals(0.00, bs.calTotalExpense());
+        assertEquals(100.00, bs.calTotalIncome());
     }
 
     @Test
     void testAddRecordOfIncomeNExpense() {
-        Income inc = new Income(10.00);
-        Expense ep = new Expense(5.00);
-        testbs.addRecord(ep);
-        testbs.addRecord(inc);
-        assertEquals(5.00, testbs.calBalance());
-        assertEquals(2, testbs.calNumOfRecords());
-        assertEquals(5.00, testbs.calTotalExpense());
-        assertEquals(10.00, testbs.calTotalIncome());
+        bs.addRecord(ep1);
+        bs.addRecord(inc1);
+        assertEquals(95.00, bs.calBalance());
+        assertEquals(2, bs.calNumOfRecords());
+        assertEquals(5.00, bs.calTotalExpense());
+        assertEquals(100.00, bs.calTotalIncome());
     }
 
     @Test
     void testFetchIncome() {
-        Record inc = new Income(10.00);
-        inc.setTempID(1);
-        testbs.addRecord(inc);
-        Record testInc = testbs.fetchIncome(1);
-        assertTrue(testbs.getIncomeList().contains(testInc));
+        inc1.setTempID(1);
+        bs.addRecord(inc1);
+        Record testInc = bs.fetchIncome(1);
+        assertTrue(bs.getIncomeList().contains(testInc));
     }
 
     @Test
     void testFetchIncomeAtEndOfArray() {
-        Income inc1 = new Income(100);
-        Income inc2 = new Income(1000);
         inc1.setTempID(2);
         inc2.setTempID(4);
-        testbs.addRecord(inc1);
-        testbs.addRecord(inc2);
+        bs.addRecord(inc1);
+        bs.addRecord(inc2);
 
-        Record testInc = testbs.fetchIncome(4);
-        assertTrue(testbs.getIncomeList().contains(testInc));
+        Record testInc = bs.fetchIncome(4);
+        assertTrue(bs.getIncomeList().contains(testInc));
     }
 
     @Test
     void testFetchIncomeNull() {
-        Record nullInc = testbs.fetchIncome(1);
+        Record nullInc = bs.fetchIncome(1);
         assertNull(nullInc);
     }
 
     @Test
     void testFetchExpense() {
-        Expense ep1 = new Expense(5);
         ep1.setTempID(100);
-        testbs.addRecord(ep1);
-        Record testEp1 = testbs.fetchExpense(100);
-        assertTrue(testbs.getExpenseList().contains(testEp1));
+        bs.addRecord(ep1);
+        Record testEp1 = bs.fetchExpense(100);
+        assertTrue(bs.getExpenseList().contains(testEp1));
     }
 
     @Test
     void testFetchExpenseNull() {
-        Record nullEp = testbs.fetchExpense(2);
+        Record nullEp = bs.fetchExpense(2);
         assertNull(nullEp);
     }
 
     @Test
     void testFetchExpenseAtEndOfArray() {
-        Expense ep1 = new Expense(5);
-        Expense ep2 = new Expense(10);
-        Expense ep3 = new Expense(100);
         ep1.setTempID(0);
         ep2.setTempID(1);
         ep3.setTempID(2);
-        testbs.addRecord(ep1);
-        testbs.addRecord(ep2);
-        testbs.addRecord(ep3);
+        bs.addRecord(ep1);
+        bs.addRecord(ep2);
+        bs.addRecord(ep3);
 
-        Record testEp = testbs.fetchExpense(2);
-        assertTrue(testbs.getExpenseList().contains(testEp));
+        Record testEp = bs.fetchExpense(2);
+        assertTrue(bs.getExpenseList().contains(testEp));
     }
     @Test
     void testDeleteRecordOfIncome() {
-        Income inc = new Income(10.00);
-        testbs.addRecord(inc);
-
-        testbs.deleteRecord(inc);
-        assertEquals(0, testbs.calNumOfRecords());
+        bs.addRecord(inc1);
+        bs.deleteRecord(inc1);
+        assertEquals(0, bs.calNumOfRecords());
     }
 
     @Test
     void testDeleteRecordOfExpense() {
-        Expense ep = new Expense(10.00);
-        testbs.addRecord(ep);
-
-        testbs.deleteRecord(ep);
-        assertEquals(0, testbs.calNumOfRecords());
+        bs.addRecord(ep1);
+        bs.deleteRecord(ep1);
+        assertEquals(0, bs.calNumOfRecords());
     }
 
     @Test
     void testListByMonthExpense() {
-        Expense ep1 = new Expense(5);
-        Expense ep2 = new Expense(10);
-        Expense ep3 = new Expense(100);
         ep1.resetDate("2023-02-01");
         ep2.resetDate("2023-02-01");
         ep3.resetDate("2023-02-01");
 
-        testbs.addRecord(ep1);
-        testbs.addRecord(ep2);
-        testbs.addRecord(ep3);
+        bs.addRecord(ep1);
+        bs.addRecord(ep2);
+        bs.addRecord(ep3);
 
         List<Record> test = new ArrayList<>();
         List<Record> nullList = new ArrayList<>();
         test.add(ep1);
         test.add(ep2);
         test.add(ep3);
-        assertEquals(test, testbs.listByMonth("expense", "2023-02"));
-        assertEquals(nullList, testbs.listByMonth("expense", "2023-01"));
-        assertEquals(nullList, testbs.listByMonth("expense", "2022-02"));
-        assertEquals(nullList, testbs.listByMonth("expense", "2022-01"));
+        assertEquals(test, bs.listByMonth("expense", "2023-02"));
+        assertEquals(nullList, bs.listByMonth("expense", "2023-01"));
+        assertEquals(nullList, bs.listByMonth("expense", "2022-02"));
+        assertEquals(nullList, bs.listByMonth("expense", "2022-01"));
     }
 
     @Test
     void testListByMonthIncome() {
-        Income inc1 = new Income(100);
-        Income inc2 = new Income(1000);
         inc1.resetDate("2023-02-22");
         inc2.resetDate("2023-02-02");
-        testbs.addRecord(inc1);
-        testbs.addRecord(inc2);
+        bs.addRecord(inc1);
+        bs.addRecord(inc2);
 
         List<Record> test = new ArrayList<>();
         List<Record> nullList = new ArrayList<>();
         test.add(inc1);
         test.add(inc2);
-        assertEquals(test, testbs.listByMonth("income", "2023-02"));
-        assertEquals(nullList, testbs.listByMonth("income", "2023-01"));
-        assertEquals(nullList, testbs.listByMonth("income", "2022-02"));
-        assertEquals(nullList, testbs.listByMonth("income", "2022-01"));
+        assertEquals(test, bs.listByMonth("income", "2023-02"));
+        assertEquals(nullList, bs.listByMonth("income", "2023-01"));
+        assertEquals(nullList, bs.listByMonth("income", "2022-02"));
+        assertEquals(nullList, bs.listByMonth("income", "2022-01"));
     }
 
 
     @Test
     void testTotalExpenseByMonth() {
-        Expense ep1 = new Expense(5);
-        Expense ep2 = new Expense(10);
-        Expense ep3 = new Expense(100);
         ep1.resetDate("2023-02-01");
         ep2.resetDate("2023-02-01");
         ep3.resetDate("2023-02-01");
-        testbs.addRecord(ep1);
-        testbs.addRecord(ep2);
-        testbs.addRecord(ep3);
+        bs.addRecord(ep1);
+        bs.addRecord(ep2);
+        bs.addRecord(ep3);
 
-        Income inc1 = new Income(100);
-        Income inc2 = new Income(1000);
-        inc1.resetDate("2023-02-22");
-        inc2.resetDate("2023-02-02");
-
-        testbs.addRecord(inc1);
-        testbs.addRecord(inc2);
-
-        assertEquals(115, testbs.totalExpenseByMonth("2023-02"));
+        assertEquals(115, bs.totalExpenseByMonth("2023-02"));
     }
 
     @Test
     void testTotalIncomeByMonth() {
-        Expense ep1 = new Expense(5);
-        Expense ep2 = new Expense(10);
-        Expense ep3 = new Expense(100);
-        ep1.resetDate("2023-02-01");
-        ep2.resetDate("2023-02-01");
-        ep3.resetDate("2023-02-01");
-
-        testbs.addRecord(ep1);
-        testbs.addRecord(ep2);
-        testbs.addRecord(ep3);
-
-        Income inc1 = new Income(100);
-        Income inc2 = new Income(1000);
         inc1.resetDate("2023-02-22");
         inc2.resetDate("2023-02-02");
+        bs.addRecord(inc1);
+        bs.addRecord(inc2);
 
-        testbs.addRecord(inc1);
-        testbs.addRecord(inc2);
-
-        assertEquals(1100, testbs.totalIncomeByMonth("2023-02"));
+        assertEquals(1100, bs.totalIncomeByMonth("2023-02"));
     }
 
     @Test
     void testTotalBalanceByMonth() {
-        Expense ep1 = new Expense(5);
-        Expense ep2 = new Expense(10);
-        Expense ep3 = new Expense(100);
         ep1.resetDate("2023-02-01");
         ep2.resetDate("2023-02-01");
         ep3.resetDate("2023-02-01");
+        bs.addRecord(ep1);
+        bs.addRecord(ep2);
+        bs.addRecord(ep3);
 
-        testbs.addRecord(ep1);
-        testbs.addRecord(ep2);
-        testbs.addRecord(ep3);
-
-        Income inc1 = new Income(100);
-        Income inc2 = new Income(1000);
         inc1.resetDate("2023-02-22");
         inc2.resetDate("2023-02-02");
+        bs.addRecord(inc1);
+        bs.addRecord(inc2);
 
-        testbs.addRecord(inc1);
-        testbs.addRecord(inc2);
-
-        assertEquals(1100 - 115, testbs.totalBalanceByMonth("2023-02"));
+        assertEquals(1100 - 115, bs.totalBalanceByMonth("2023-02"));
     }
 
     @Test
     void testCalTotalExpense() {
-        Expense ep1 = new Expense(5);
-        Expense ep2 = new Expense(10);
-        Expense ep3 = new Expense(100);
-        testbs.addRecord(ep1);
-        testbs.addRecord(ep2);
-        testbs.addRecord(ep3);
-        assertEquals(5 + 10 + 100, testbs.calTotalExpense());
+        bs.addRecord(ep1);
+        bs.addRecord(ep2);
+        bs.addRecord(ep3);
+        assertEquals(5 + 10 + 100, bs.calTotalExpense());
     }
 
     @Test
     void testCalTotalIncome() {
-        Income inc1 = new Income(100);
-        Income inc2 = new Income(1000);
-        testbs.addRecord(inc1);
-        testbs.addRecord(inc2);
-        assertEquals(100 + 1000, testbs.calTotalIncome());
+        bs.addRecord(inc1);
+        bs.addRecord(inc2);
+        assertEquals(100 + 1000, bs.calTotalIncome());
     }
 
     @Test
     void testCalBalance() {
-        Expense ep1 = new Expense(50);
-        Income inc1 = new Income(100);
-        testbs.addRecord(ep1);
-        testbs.addRecord(inc1);
-        assertEquals(100 - 50, testbs.calBalance());
+        bs.addRecord(ep1);
+        bs.addRecord(inc1);
+        assertEquals(100 - 5, bs.calBalance());
     }
 
     @Test
     void testCalNumOfRecords() {
-        Expense ep1 = new Expense(50);
-        Income inc1 = new Income(100);
-        testbs.addRecord(ep1);
-        testbs.addRecord(inc1);
-        assertEquals(2, testbs.calNumOfRecords());
+        bs.addRecord(ep1);
+        bs.addRecord(inc1);
+        assertEquals(2, bs.calNumOfRecords());
+    }
+
+    @Test
+    void testToJson() {
+        ep1.classify(ExpenseCategory.FOOD);
+        bs.addRecord(ep1);
+        inc1.classify(IncomeCategory.GIFT);
+        bs.addRecord(inc1);
+        try {
+            JSONObject testjson = bs.toJson();
+            String bsStr = "{\"incomes\":[" +
+                    "{\"dateTime\":\"" + inc1.getDateTime().toString() + "\",\"amount\":100,\"category\":\"GIFT\"}]," +
+                    "\"expenses\":[" +
+                    "{\"dateTime\":\"" + ep1.getDateTime().toString() + "\",\"amount\":5,\"category\":\"FOOD\"}]}";
+            assertEquals(bsStr, testjson.toString());
+        } catch (NullPointerException e) {
+            fail("NullPointerException is not expected");
+        }
+    }
+
+    @Test
+    void testToJsonEmptyExpenses() {
+        inc1.classify(IncomeCategory.GIFT);
+        bs.addRecord(inc1);
+        try {
+            JSONObject testjson = bs.toJson();
+            String bsStr = "{\"incomes\":[" +
+                    "{\"dateTime\":\"" + inc1.getDateTime().toString() + "\",\"amount\":100,\"category\":\"GIFT\"}]," +
+                    "\"expenses\":[]}";
+            assertEquals(bsStr, testjson.toString());
+        } catch (NullPointerException e) {
+            fail("NullPointerException is not expected");
+        }
+    }
+
+    @Test
+    void testToJsonEmptyIncomes() {
+        ep1.classify(ExpenseCategory.FOOD);
+        bs.addRecord(ep1);
+        try {
+            JSONObject testjson = bs.toJson();
+            String bsStr = "{\"incomes\":[]," +
+                    "\"expenses\":[" +
+                    "{\"dateTime\":\"" + ep1.getDateTime().toString() + "\",\"amount\":5,\"category\":\"FOOD\"}]}";
+            assertEquals(bsStr, testjson.toString());
+        } catch (NullPointerException e) {
+            fail("NullPointerException is not expected");
+        }
     }
 }

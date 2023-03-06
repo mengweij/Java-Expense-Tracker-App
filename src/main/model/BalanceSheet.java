@@ -125,21 +125,14 @@ public class BalanceSheet {
     // EFFECTS: returns this as JSON object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        try {
-            json.put("expenses", expenseListToJson());
-        } catch (NullPointerException e) {
-            // continue
-        }
-        try {
-            json.put("incomes", incomeListToJson());
-        } catch (NullPointerException e) {
-            // continue
-        }
+        json.put("expenses", expenseListToJson());
+        json.put("incomes", incomeListToJson());
+
         return json;
     }
 
     // EFFECTS: returns expenses in this balance sheet as a JSON array
-    private JSONArray expenseListToJson() throws NullPointerException {
+    private JSONArray expenseListToJson() {
         JSONArray expenseJsonArray = new JSONArray();
 
         for (Record expense : expenseList) {
@@ -150,7 +143,7 @@ public class BalanceSheet {
     }
 
     // EFFECTS: returns incomes in this balance sheet as a JSON array
-    private JSONArray incomeListToJson() throws NullPointerException {
+    private JSONArray incomeListToJson() {
         JSONArray incomeJsonArray = new JSONArray();
 
         for (Record income : incomeList) {
