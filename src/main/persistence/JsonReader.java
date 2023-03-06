@@ -51,14 +51,20 @@ public class JsonReader {
     private void addRecords(BalanceSheet bs, JSONObject json) {
         JSONArray jsonArrayExpense = json.getJSONArray("expenses");
         JSONArray jsonArrayIncome = json.getJSONArray("incomes");
-        for (Object i : jsonArrayExpense) {
-            JSONObject nextExpense = (JSONObject) i;
-            addExpense(bs, nextExpense);
+        if (!jsonArrayExpense.isEmpty()) {
+            for (Object i : jsonArrayExpense) {
+                JSONObject nextExpense = (JSONObject) i;
+                addExpense(bs, nextExpense);
+            }
         }
-        for (Object j : jsonArrayIncome) {
-            JSONObject nextIncome = (JSONObject) j;
-            addIncome(bs, nextIncome);
+
+        if (!jsonArrayIncome.isEmpty()) {
+            for (Object j : jsonArrayIncome) {
+                JSONObject nextIncome = (JSONObject) j;
+                addIncome(bs, nextIncome);
+            }
         }
+
     }
 
     // MODIFIES: bs
@@ -67,9 +73,9 @@ public class JsonReader {
         double amount = jsonObject.getDouble("amount");
         CharSequence dateTimeChar = jsonObject.getString("dateTime");
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeChar);
-        ExpenseCategory category = ExpenseCategory.valueOf(jsonObject.getString("categoryName"));
+        ExpenseCategory category = ExpenseCategory.valueOf(jsonObject.getString("category"));
 
-        Record expense = new Expense(amount);
+        Expense expense = new Expense(amount);
         expense.classify(category);
         expense.resetDateTime(dateTime);
 
@@ -82,7 +88,7 @@ public class JsonReader {
         double amount = jsonObject.getDouble("amount");
         CharSequence dateTimeChar = jsonObject.getString("dateTime");
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeChar);
-        IncomeCategory category = IncomeCategory.valueOf(jsonObject.getString("categoryName"));
+        IncomeCategory category = IncomeCategory.valueOf(jsonObject.getString("category"));
 
         Income income = new Income(amount);
         income.classify(category);

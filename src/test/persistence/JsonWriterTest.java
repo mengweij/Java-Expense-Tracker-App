@@ -68,9 +68,11 @@ public class JsonWriterTest extends JsonTest {
             BalanceSheet generalBS = reader.read();
             List<Record> expenses = generalBS.getExpenseList();
             assertEquals(1, expenses.size());
+            List<Record> incomes = generalBS.getIncomeList();
+            assertEquals(1, incomes.size());
             assertEquals(2, generalBS.calNumOfRecords());
-            testExpense(50, "FOOD", 2023, generalBS.getExpenseList().get(0));
-            testIncome(100, "SALARY", 2023, generalBS.getIncomeList().get(0));
+            testExpense(50, "FOOD", 2023, expenses.get(0));
+            testIncome(100, "SALARY", 2023, incomes.get(0));
         } catch (IOException E) {
             fail("IOException is not expected");
         }

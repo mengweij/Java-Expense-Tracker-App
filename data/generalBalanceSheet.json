@@ -1,24 +1,12 @@
 {
     "incomes": [{
-        "date": "2023-03-01",
-        "dateTime": "2023-03-01T13:42:16.479721",
+        "dateTime": "2023-03-05T16:36:14.196217",
         "amount": 100,
-        "timeID": 20230301134216479,
-        "month": 3,
-        "year": 2023,
-        "tempID": 0,
-        "categoryName": "SALARY",
-        "day": 1
+        "category": "SALARY"
     }],
     "expenses": [{
-        "date": "2023-03-01",
-        "dateTime": "2023-03-01T13:42:16.478519",
+        "dateTime": "2023-03-05T16:36:14.195095",
         "amount": 50,
-        "timeID": 20230301134216478,
-        "month": 3,
-        "year": 2023,
-        "tempID": 0,
-        "day": 1,
-        "categoryName": "FOOD"
+        "category": "FOOD"
     }]
 }

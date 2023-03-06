@@ -1,5 +1,6 @@
 package model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.YearMonth;
@@ -124,9 +125,39 @@ public class BalanceSheet {
     // EFFECTS: returns this as JSON object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("expenses", expenseList);
-        json.put("incomes", incomeList);
+        try {
+            json.put("expenses", expenseListToJson());
+        } catch (NullPointerException e) {
+            // continue
+        }
+        try {
+            json.put("incomes", incomeListToJson());
+        } catch (NullPointerException e) {
+            // continue
+        }
         return json;
+    }
+
+    // EFFECTS: returns expenses in this balance sheet as a JSON array
+    private JSONArray expenseListToJson() throws NullPointerException {
+        JSONArray expenseJsonArray = new JSONArray();
+
+        for (Record expense : expenseList) {
+            expenseJsonArray.put(expense.toJson());
+        }
+
+        return expenseJsonArray;
+    }
+
+    // EFFECTS: returns incomes in this balance sheet as a JSON array
+    private JSONArray incomeListToJson() throws NullPointerException {
+        JSONArray incomeJsonArray = new JSONArray();
+
+        for (Record income : incomeList) {
+            incomeJsonArray.put(income.toJson());
+        }
+
+        return incomeJsonArray;
     }
 
     // EFFECTS: calculates the total expense

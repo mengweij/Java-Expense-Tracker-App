@@ -1,12 +1,19 @@
 package model;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ExpenseTest {
     Expense ep;
@@ -66,5 +73,44 @@ public class ExpenseTest {
         long lastNineDigits = Long.parseLong(lastNineDigitsStr);
         long newTimeID = 20220207 * (long) Math.pow(10, 9) + lastNineDigits;
         assertEquals(newTimeID, ep.getTimeID());
+    }
+
+    @Test
+    void testResetDateTime() {
+        LocalDateTime testDateTime = LocalDateTime.of(2010, 1, 1, 1, 0);
+        ep.resetDateTime(testDateTime);
+        assertEquals(2010, ep.getYear());
+        assertEquals(1, ep.getMonth());
+        assertEquals(1, ep.getDay());
+    }
+
+    @Test
+    void testToJson() {
+        BalanceSheet bs = new BalanceSheet();
+        Expense ep = new Expense(500);
+        ep.classify(ExpenseCategory.HEALTH);
+        JSONObject epjson = ep.toJson();
+        BalanceSheet testBalanceSheet = new BalanceSheet();
+
+        try {
+            JsonWriter writer = new JsonWriter("./data/individualExpense.json");
+            writer.open();
+            writer.write(bs);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            fail("FileNotFoundException is not expected");
+        }
+
+//        JsonReader reader = new JsonReader("./data/individualExpense.json");
+//        try {
+//            BalanceSheet generalBS = reader.read();
+//            List<Record> expenses = generalBS.getExpenseList();
+//            assertEquals(1, expenses.size());
+//            assertEquals(2, generalBS.calNumOfRecords());
+//            testExpense(50, "FOOD", 2023, generalBS.getExpenseList().get(0));
+//            testIncome(100, "SALARY", 2023, generalBS.getIncomeList().get(0));
+//        } catch (IOException E) {
+//            fail("IOException is not expected");
+//        }
     }
 }
