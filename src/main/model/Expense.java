@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 // Represents an expense record, with amount (in dollars), date, time, category, a timeID, and a tempID
 public class Expense implements Record {
@@ -119,6 +120,5 @@ public class Expense implements Record {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
-
-
+    
 }

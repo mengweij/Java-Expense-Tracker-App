@@ -1,4 +1,8 @@
 {
     "incomes": [],
-    "expenses": []
+    "expenses": [{
+        "dateTime": "2023-03-26T09:45:57.979812",
+        "amount": 100,
+        "category": "GENERAL"
+    }]
 }
