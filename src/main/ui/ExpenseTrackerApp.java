@@ -19,7 +19,6 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 // Expense tracker App
-// TODO: how to add citation?
 public class ExpenseTrackerApp {
     private BalanceSheet bs;
     private Scanner input;

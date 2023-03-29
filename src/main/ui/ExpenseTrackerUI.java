@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+// Expense tracker UI
 public class ExpenseTrackerUI extends JFrame {
     private BackgroundDesktopPane desktop;
     private JInternalFrame mainMenu;
@@ -25,6 +26,7 @@ public class ExpenseTrackerUI extends JFrame {
     private static final int HEIGHT = 700;
     private static final String JSON_STORE_ADDRESS = "./data/balancesheet.json";
 
+    // EFFECTS: set up the desktop with a main menu and background image
     public ExpenseTrackerUI() {
         bs = new BalanceSheet();
         jsonWriter = new JsonWriter(JSON_STORE_ADDRESS);
@@ -38,17 +40,11 @@ public class ExpenseTrackerUI extends JFrame {
         }
         desktop.addMouseListener(new DesktopFocusAction());
 
-        mainMenu = new JInternalFrame("Main Menu", false, false, false, false);
-        mainMenu.setLayout(new BorderLayout());
-
         setContentPane(desktop);
         setTitle("Your Expense Tracker");
         setSize(WIDTH, HEIGHT);
 
-        addButtons();
-
-        mainMenu.pack();
-        mainMenu.setVisible(true);
+        setMainMenu();
         desktop.add(mainMenu);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -56,31 +52,49 @@ public class ExpenseTrackerUI extends JFrame {
         setVisible(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: set up the main menu
+    private void setMainMenu() {
+        mainMenu = new JInternalFrame("Main Menu", false, false, false, false);
+        mainMenu.setLayout(new BorderLayout());
+
+        addButtons();
+        mainMenu.pack();
+        mainMenu.setVisible(true);
+
+        int x = WIDTH - mainMenu.getWidth();
+        int y = 0;
+        mainMenu.setLocation(x,y);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: add functional buttons
     private void addButtons() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(5,1));
         buttonPanel.add(new JButton(new AddExpenseAction()));
-        buttonPanel.add(new JButton("Add Income"));
         buttonPanel.add(new JButton(new ReviewAction()));
         buttonPanel.add(new JButton(new SaveDataAction()));
         buttonPanel.add(new JButton(new LoadDataAction()));
-//        buttonPanel.add(new JButton(new AddIncomeAction()));
 
         mainMenu.add(buttonPanel, BorderLayout.CENTER);
     }
 
-    public JsonReader getJsonReader() {
-        return jsonReader;
+    // MODIFIES: this
+    // EFFECTS: center main application window on desktop
+    private void centreOnScreen() {
+        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+        setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
     }
 
-    public JsonWriter getJsonWriter() {
-        return jsonWriter;
-    }
 
+    // Starts the application
     public static void main(String[] args) {
         new ExpenseTrackerUI();
     }
 
+    // Represents action to be taken when the user wants to add a new expense to the balance sheet
     private class AddExpenseAction extends AbstractAction {
         AddExpenseAction() {
             super("Add Expense");
@@ -92,18 +106,7 @@ public class ExpenseTrackerUI extends JFrame {
         }
     }
 
-    private class AddIncomeAction extends AbstractAction {
-        AddIncomeAction() {
-            super("Add Income");
-        }
-
-        //todo
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //desktop.add(new AddExpenseUI(bs));
-        }
-    }
-
+    // Represents action to be taken when the user wants to review all expenses in the balance sheet
     private class ReviewAction extends AbstractAction {
         ReviewAction() {
             super("Review My Records");
@@ -115,7 +118,7 @@ public class ExpenseTrackerUI extends JFrame {
         }
     }
 
-    // EFFECTS: saves the balance sheet to file
+    // Represents action to be taken when the user wants to save data
     private class SaveDataAction extends AbstractAction {
         SaveDataAction() {
             super("Save My Records");
@@ -135,7 +138,7 @@ public class ExpenseTrackerUI extends JFrame {
         }
     }
 
-    // EFFECTS: loads balance sheet from file
+    // Represents action to be taken when the user wants to load the saved data
     private class LoadDataAction extends AbstractAction {
         LoadDataAction() {
             super("Load My Records");
@@ -153,26 +156,7 @@ public class ExpenseTrackerUI extends JFrame {
         }
     }
 
-    /**
-     * Helper to center main application window on desktop
-     */
-    private void centreOnScreen() {
-        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int height = Toolkit.getDefaultToolkit().getScreenSize().height;
-        setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
-    }
-
-    /**
-     * Represents action to be taken when user clicks desktop
-     * to switch focus. (Needed for key handling.)
-     */
-    private class DesktopFocusAction extends MouseAdapter {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            ExpenseTrackerUI.this.requestFocusInWindow();
-        }
-    }
-
+    // Represents DesktopPane allowing for setting a background image
     private class BackgroundDesktopPane extends JDesktopPane {
         private final Image backgroundImage;
 
@@ -190,5 +174,11 @@ public class ExpenseTrackerUI extends JFrame {
         }
     }
 
-
+    // Represents action to be taken when user clicks desktop to switch focus.
+    private class DesktopFocusAction extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            ExpenseTrackerUI.this.requestFocusInWindow();
+        }
+    }
 }

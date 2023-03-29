@@ -11,12 +11,12 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 
-/**
- * Represents visual user interface for reviewing all saved records.
- */
+
+// Represents visual user interface for reviewing saved expenses
 public class ReviewUI extends JInternalFrame {
     private JLabel periodLabel;
     private JLabel totalLabel;
+    private JLabel descriptionLabel;
     private JTextField periodField;
     private JButton enterButton;
     private JList<String> expenseList;
@@ -36,15 +36,17 @@ public class ReviewUI extends JInternalFrame {
         setPosition(parent);
         setVisible(true);
 
-        periodLabel = new JLabel("Period (YYYY-MM):");
-        periodField = new JTextField();
-        enterButton = new JButton(new ReviewRecordsAction());
+        JPanel inputPanel = setInputPanel();
+        JPanel expensePanel = setExpenseDisplayPanel();
+        descriptionLabel = new JLabel("NOTICE: Only support to review records after 2000.");
 
-        JPanel inputPanel = new JPanel(new GridLayout(1,3));
-        inputPanel.add(periodLabel);
-        inputPanel.add(periodField);
-        inputPanel.add(enterButton);
+        add(inputPanel, BorderLayout.NORTH);
+        add(descriptionLabel, BorderLayout.CENTER);
+        add(expensePanel, BorderLayout.SOUTH);
+    }
 
+    // EFFECTS: set up a panel to display recorded expenses
+    private JPanel setExpenseDisplayPanel() {
         expenseModel = new DefaultListModel<>();
         expenseList = new JList<>(expenseModel);
         JScrollPane scrollPane = new JScrollPane(expenseList);
@@ -53,20 +55,29 @@ public class ReviewUI extends JInternalFrame {
         expensePanel.add(scrollPane, BorderLayout.CENTER);
         totalLabel = new JLabel(String.format("Total Expense: $%.2f", totalExpenseByMonth));
         expensePanel.add(totalLabel, BorderLayout.SOUTH);
-
-        add(inputPanel, BorderLayout.NORTH);
-        add(expensePanel, BorderLayout.SOUTH);
+        return expensePanel;
     }
 
-    /**
-     * Sets the position of this review UI relative to parent component
-     * @param parent  the parent component
-     */
+    // EFFECTS: set up a panel with all input fields
+    private JPanel setInputPanel() {
+        periodLabel = new JLabel("Period (YYYY-MM):");
+        periodField = new JTextField();
+        enterButton = new JButton(new ReviewRecordsAction());
+
+        JPanel inputPanel = new JPanel(new GridLayout(1,3));
+        inputPanel.add(periodLabel);
+        inputPanel.add(periodField);
+        inputPanel.add(enterButton);
+        return inputPanel;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: set the position of this add-expense UI relative to parent component
     private void setPosition(Component parent) {
         setLocation(0, parent.getHeight() / 2);
     }
 
-
+    // Represents action to be taken when the user wants to review expenses of a specific period
     private class ReviewRecordsAction extends AbstractAction {
         ReviewRecordsAction() {
             super("Enter");
@@ -93,7 +104,7 @@ public class ReviewUI extends JInternalFrame {
             }
         }
 
-//        EFFECTS: display expense records of a given month
+        // EFFECTS: display expense records of a given month
         private void doDisplayExpense(List<Record> expenseList) {
             expenseModel.clear();
 

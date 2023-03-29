@@ -19,7 +19,7 @@ for specific periods.
 - I want to be able to save my expense tracker to file.
 - I want to be able to be able to load my expense tracker from file.
 
-# Instructions for Grader
+## Instructions for Grader
 
 - You can generate the first required action related to adding Xs to a Y by clicking _Add Expense_
 - You can generate the second required action related to adding Xs to a Y by clicking _Review My Records_
