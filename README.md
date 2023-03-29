@@ -19,6 +19,16 @@ for specific periods.
 - I want to be able to save my expense tracker to file.
 - I want to be able to be able to load my expense tracker from file.
 
+# Instructions for Grader
+
+- You can generate the first required action related to adding Xs to a Y by clicking _Add Expense_
+- You can generate the second required action related to adding Xs to a Y by clicking _Review My Records_
+- You can locate my visual component by running the program (the background image)
+- You can save the state of my application by clicking _Save My Records_
+- You can reload the state of my application by clicking _Load My Records_
+
 ## Reference
-The serialization and deserialization of JSON refer to the repository: 
+- The serialization and deserialization of JSON refer to the repository: 
 https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+- The realization of GUI refer to the repository: 
+https://github.students.cs.ubc.ca/CPSC210/AlarmSystem.git

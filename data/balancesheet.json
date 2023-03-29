@@ -1,8 +1,30 @@
 {
     "incomes": [],
-    "expenses": [{
-        "dateTime": "2023-03-26T09:45:57.979812",
-        "amount": 100,
-        "category": "GENERAL"
-    }]
+    "expenses": [
+        {
+            "dateTime": "2023-03-26T09:45:57.979812",
+            "amount": 100,
+            "category": "GENERAL"
+        },
+        {
+            "dateTime": "2023-03-28T15:40:23.528799",
+            "amount": 1,
+            "category": "GENERAL"
+        },
+        {
+            "dateTime": "2023-03-28T15:40:27.909847",
+            "amount": 2,
+            "category": "GROCERY"
+        },
+        {
+            "dateTime": "2023-03-01T15:40:44.197675",
+            "amount": 200,
+            "category": "HOUSE"
+        },
+        {
+            "dateTime": "2023-03-28T16:20:42.961373",
+            "amount": 10,
+            "category": "GENERAL"
+        }
+    ]
 }

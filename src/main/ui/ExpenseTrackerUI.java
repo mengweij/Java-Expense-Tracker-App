@@ -4,23 +4,25 @@ import model.BalanceSheet;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ExpenseTrackerUI extends JFrame {
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
-    private JDesktopPane desktop;
+    private BackgroundDesktopPane desktop;
     private JInternalFrame mainMenu;
     private BalanceSheet bs;
     private JsonReader jsonReader;
     private JsonWriter jsonWriter;
 
+    private static final int WIDTH = 700;
+    private static final int HEIGHT = 700;
     private static final String JSON_STORE_ADDRESS = "./data/balancesheet.json";
 
     public ExpenseTrackerUI() {
@@ -28,8 +30,14 @@ public class ExpenseTrackerUI extends JFrame {
         jsonWriter = new JsonWriter(JSON_STORE_ADDRESS);
         jsonReader = new JsonReader(JSON_STORE_ADDRESS);
 
-        desktop = new JDesktopPane();
+        try {
+            Image backgroundImage = ImageIO.read(new File("./resources/background.jpg"));
+            desktop = new BackgroundDesktopPane(backgroundImage);
+        } catch (IOException ex) {
+            desktop.setBackground(new Color(255,255,255));
+        }
         desktop.addMouseListener(new DesktopFocusAction());
+
         mainMenu = new JInternalFrame("Main Menu", false, false, false, false);
         mainMenu.setLayout(new BorderLayout());
 
@@ -59,6 +67,18 @@ public class ExpenseTrackerUI extends JFrame {
 //        buttonPanel.add(new JButton(new AddIncomeAction()));
 
         mainMenu.add(buttonPanel, BorderLayout.CENTER);
+    }
+
+    public JsonReader getJsonReader() {
+        return jsonReader;
+    }
+
+    public JsonWriter getJsonWriter() {
+        return jsonWriter;
+    }
+
+    public static void main(String[] args) {
+        new ExpenseTrackerUI();
     }
 
     private class AddExpenseAction extends AbstractAction {
@@ -150,6 +170,23 @@ public class ExpenseTrackerUI extends JFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
             ExpenseTrackerUI.this.requestFocusInWindow();
+        }
+    }
+
+    private class BackgroundDesktopPane extends JDesktopPane {
+        private final Image backgroundImage;
+
+        public BackgroundDesktopPane(Image backgroundImage) {
+            this.backgroundImage = backgroundImage;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
         }
     }
 

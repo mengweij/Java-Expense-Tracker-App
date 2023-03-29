@@ -606,4 +606,7 @@ public class ExpenseTrackerApp {
         System.out.println("Oops! Invalid input. Try again!");
     }
 
+    public static void main(String[] args) {
+        new ExpenseTrackerApp();
+    }
 }

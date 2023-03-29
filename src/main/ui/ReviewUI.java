@@ -32,7 +32,7 @@ public class ReviewUI extends JInternalFrame {
         this.bs = bs;
         totalExpenseByMonth = 0.0;
 
-        setSize(400, 250);
+        setSize(parent.getWidth(), (int) (parent.getHeight() * 0.4));
         setPosition(parent);
         setVisible(true);
 

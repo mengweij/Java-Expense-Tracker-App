@@ -3,16 +3,12 @@ package ui;
 import model.BalanceSheet;
 import model.Expense;
 import model.ExpenseCategory;
-import model.Record;
 import ui.exception.InvalidInputException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 
 /**
  * Represents visual user interface for adding new expense.
@@ -22,6 +18,7 @@ public class AddExpenseUI extends JInternalFrame {
     private JLabel categoryLabel;
     private JLabel dateLabel;
     private JLabel totalLabel;
+    private JLabel descriptionLabel;
     private JTextField amountField;
     private JTextField dateField;
     private JButton addButton;
@@ -35,17 +32,14 @@ public class AddExpenseUI extends JInternalFrame {
         super("Add New Expense", false, true, false, false);
         this.bs = bs;
 
-        setSize(400, 400);
+        setSize(parent.getWidth() / 2, parent.getHeight() / 2);
         setPosition(parent);
         setVisible(true);
 
         amountLabel = new JLabel("Amount:");
-        dateLabel = new JLabel("Date (Blank for today):");
+        dateLabel = new JLabel("Date (YYYY-MM-DD):");
         categoryLabel = new JLabel("Category:");
-
-//        NumberFormat amountFormat = NumberFormat.getCurrencyInstance();
-//        amountField = new JFormattedTextField(amountFormat);
-//        amountField.setColumns(10);
+        descriptionLabel = new JLabel("NOTICE: Date field blank for today");
 
         amountField = new JTextField();
         dateField = new JTextField();
@@ -63,15 +57,16 @@ public class AddExpenseUI extends JInternalFrame {
         categoryComboBox = new JComboBox<>(categoryModel);
 
         JPanel inputPanel = new JPanel(new GridLayout(3, 2));
+        inputPanel.add(categoryLabel);
+        inputPanel.add(categoryComboBox);
         inputPanel.add(amountLabel);
         inputPanel.add(amountField);
         inputPanel.add(dateLabel);
         inputPanel.add(dateField);
-        inputPanel.add(categoryLabel);
-        inputPanel.add(categoryComboBox);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(addButton);
+        JPanel descriptionAndButtonPanel = new JPanel(new GridLayout(2, 1));
+        descriptionAndButtonPanel.add(descriptionLabel);
+        descriptionAndButtonPanel.add(addButton);
 
         JPanel expensePanel = new JPanel(new BorderLayout());
         expensePanel.add(scrollPane, BorderLayout.CENTER);
@@ -79,7 +74,7 @@ public class AddExpenseUI extends JInternalFrame {
         expensePanel.add(totalLabel, BorderLayout.SOUTH);
 
         add(inputPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.CENTER);
+        add(descriptionAndButtonPanel, BorderLayout.CENTER);
         add(expensePanel, BorderLayout.SOUTH);
 
     }
@@ -111,7 +106,7 @@ public class AddExpenseUI extends JInternalFrame {
                     expense.classify(ExpenseCategory.valueOf(category));
                     bs.addRecord(expense);
 
-                    expenseModel.addElement(expense.getDate() + " - $" + amount + " - " + category + ".");
+                    expenseModel.addElement(expense.getDate() + " - $" + amount + " - " + category);
                     totalLabel.setText(String.format("Total Expense: $%.2f", bs.calTotalExpense()));
                 } else {
                     throw new InvalidInputException("Please enter a positive number.");
@@ -123,7 +118,7 @@ public class AddExpenseUI extends JInternalFrame {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Invalid Input",
                         JOptionPane.ERROR_MESSAGE);
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(null, "Enter in the format of 'yyyy-mm-dd'", "Invalid Input",
+                JOptionPane.showMessageDialog(null, "Enter in the format of 'YYYY-MM-DD'", "Invalid Input",
                         JOptionPane.ERROR_MESSAGE);
             } finally {
                 amountField.setText("");
