@@ -53,7 +53,7 @@ public class ReviewUI extends JInternalFrame {
 
         JPanel expensePanel = new JPanel(new BorderLayout());
         expensePanel.add(scrollPane, BorderLayout.CENTER);
-        totalLabel = new JLabel(String.format("Total Expense: $%.2f", totalExpenseByMonth));
+        totalLabel = new JLabel(" ");
         expensePanel.add(totalLabel, BorderLayout.SOUTH);
         return expensePanel;
     }
@@ -89,7 +89,8 @@ public class ReviewUI extends JInternalFrame {
             try {
                 if (yearAndMonth.matches(yearAndMonthFormat)) {
                     totalExpenseByMonth = bs.totalExpenseByMonth(yearAndMonth);
-                    totalLabel.setText(String.format("Total Expense: $%.2f", totalExpenseByMonth));
+                    totalLabel.setText(String.format("Total Expense in " + yearAndMonth
+                            + ": $%.2f", totalExpenseByMonth));
                     List<Record> expenseRecordList = bs.listByMonth("expense", yearAndMonth);
                     doDisplayExpense(expenseRecordList);
                 } else {

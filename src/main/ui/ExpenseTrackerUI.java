@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,6 +19,8 @@ import java.io.IOException;
 public class ExpenseTrackerUI extends JFrame {
     private BackgroundDesktopPane desktop;
     private JInternalFrame mainMenu;
+    private JInternalFrame addExpenseMenu;
+    private JInternalFrame reviewMenu;
     private BalanceSheet bs;
     private JsonReader jsonReader;
     private JsonWriter jsonWriter;
@@ -102,7 +105,8 @@ public class ExpenseTrackerUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            desktop.add(new AddExpenseUI(bs, ExpenseTrackerUI.this));
+            addExpenseMenu = new AddExpenseUI(bs, ExpenseTrackerUI.this);
+            desktop.add(addExpenseMenu);
         }
     }
 
@@ -114,7 +118,8 @@ public class ExpenseTrackerUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            desktop.add(new ReviewUI(bs, ExpenseTrackerUI.this));
+            reviewMenu = new ReviewUI(bs, ExpenseTrackerUI.this);
+            desktop.add(reviewMenu);
         }
     }
 
@@ -149,9 +154,17 @@ public class ExpenseTrackerUI extends JFrame {
             try {
                 bs = jsonReader.read();
                 JOptionPane.showMessageDialog(null, "Loaded your data from " + JSON_STORE_ADDRESS);
+                if (!reviewMenu.isClosed()) {
+                    reviewMenu.setClosed(true);
+                }
+                if (!addExpenseMenu.isClosed()) {
+                    addExpenseMenu.setClosed(true);
+                }
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Unable to read from file: "
                         + JSON_STORE_ADDRESS, "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (PropertyVetoException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }
