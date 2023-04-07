@@ -2,38 +2,23 @@
     "incomes": [],
     "expenses": [
         {
-            "dateTime": "2023-03-28T19:48:44.497572",
-            "amount": 111,
+            "dateTime": "2023-04-07T16:07:33.506757",
+            "amount": 10,
             "category": "GENERAL"
         },
         {
-            "dateTime": "2023-03-28T19:48:47.258731",
-            "amount": 1111,
-            "category": "GENERAL"
+            "dateTime": "2023-04-07T16:07:39.174828",
+            "amount": 100,
+            "category": "GROCERY"
         },
         {
-            "dateTime": "2023-03-28T19:48:55.855824",
-            "amount": 111,
-            "category": "TRAVEL"
+            "dateTime": "2020-02-10T16:20:24.340822",
+            "amount": 100,
+            "category": "FOOD"
         },
         {
-            "dateTime": "2023-03-29T15:09:17.187541",
-            "amount": 1,
-            "category": "GENERAL"
-        },
-        {
-            "dateTime": "2023-03-29T15:09:37.050463",
-            "amount": 99,
-            "category": "GENERAL"
-        },
-        {
-            "dateTime": "2023-03-29T15:14:41.564200",
-            "amount": 11,
-            "category": "GENERAL"
-        },
-        {
-            "dateTime": "2023-03-29T15:15:01.928125",
-            "amount": 900,
+            "dateTime": "2023-04-07T16:21:55.626099",
+            "amount": 10,
             "category": "GENERAL"
         }
     ]

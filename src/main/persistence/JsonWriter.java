@@ -1,6 +1,8 @@
 package persistence;
 
 import model.BalanceSheet;
+import model.Event;
+import model.EventLog;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -28,6 +30,7 @@ public class JsonWriter {
     public void write(BalanceSheet bs) {
         JSONObject json = bs.toJson();
         saveToFile(json.toString(TAB));
+        EventLog.getInstance().logEvent(new Event("Data saved"));
     }
 
     // MODIFIES: this

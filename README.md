@@ -27,8 +27,15 @@ for specific periods.
 - You can save the state of my application by clicking _Save My Records_
 - You can reload the state of my application by clicking _Load My Records_
 
+## Phase 4: Task 2
+Representative samples of the event logs:
+- _Add Expense_: Expense added to Balance Sheet
+- _Review My Records_: Records of XXXX-XX reviewed
+- _Save My Records_: Data saved
+- _Load My Records_: Data loaded
+
 ## Reference
 - The serialization and deserialization of JSON refer to the repository: 
 https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
-- The realization of GUI refer to the repository: 
+- The realization of GUI and Event Log refer to the repository: 
 https://github.students.cs.ubc.ca/CPSC210/AlarmSystem.git

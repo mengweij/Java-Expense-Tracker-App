@@ -1,15 +1,15 @@
 package ui;
 
 import model.BalanceSheet;
+import model.Event;
+import model.EventLog;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,6 +34,8 @@ public class ExpenseTrackerUI extends JFrame {
         bs = new BalanceSheet();
         jsonWriter = new JsonWriter(JSON_STORE_ADDRESS);
         jsonReader = new JsonReader(JSON_STORE_ADDRESS);
+        addExpenseMenu = new AddExpenseUI(bs, ExpenseTrackerUI.this);
+        reviewMenu = new ReviewUI(bs, ExpenseTrackerUI.this);
 
         try {
             Image backgroundImage = ImageIO.read(new File("./resources/background.jpg"));
@@ -50,9 +52,10 @@ public class ExpenseTrackerUI extends JFrame {
         setMainMenu();
         desktop.add(mainMenu);
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         centreOnScreen();
         setVisible(true);
+
     }
 
     // MODIFIES: this
@@ -79,6 +82,7 @@ public class ExpenseTrackerUI extends JFrame {
         buttonPanel.add(new JButton(new ReviewAction()));
         buttonPanel.add(new JButton(new SaveDataAction()));
         buttonPanel.add(new JButton(new LoadDataAction()));
+        buttonPanel.add(new JButton(new QuitAction()));
 
         mainMenu.add(buttonPanel, BorderLayout.CENTER);
     }
@@ -96,6 +100,7 @@ public class ExpenseTrackerUI extends JFrame {
     public static void main(String[] args) {
         new ExpenseTrackerUI();
     }
+
 
     // Represents action to be taken when the user wants to add a new expense to the balance sheet
     private class AddExpenseAction extends AbstractAction {
@@ -169,6 +174,22 @@ public class ExpenseTrackerUI extends JFrame {
         }
     }
 
+    // Represents action to be taken when the user wants to quit the program
+    private class QuitAction extends AbstractAction {
+        QuitAction() {
+            super("Quit");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            for (Event event : EventLog.getInstance()) {
+                System.out.println(event.toString());
+            }
+            System.exit(0);
+
+        }
+    }
+
     // Represents DesktopPane allowing for setting a background image
     private class BackgroundDesktopPane extends JDesktopPane {
         private final Image backgroundImage;
@@ -194,4 +215,5 @@ public class ExpenseTrackerUI extends JFrame {
             ExpenseTrackerUI.this.requestFocusInWindow();
         }
     }
+
 }

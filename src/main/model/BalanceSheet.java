@@ -27,9 +27,11 @@ public class BalanceSheet {
     public boolean addRecord(Record record) {
         if (record.getClass() == Expense.class) {
             expenseList.add(record);
+            EventLog.getInstance().logEvent(new Event("Expense added to Balance Sheet"));
         }
         if (record.getClass() == Income.class) {
             incomeList.add(record);
+            EventLog.getInstance().logEvent(new Event("Income added to Balance Sheet"));
         }
         return true;
     }
@@ -91,6 +93,7 @@ public class BalanceSheet {
                 }
             }
         }
+        EventLog.getInstance().logEvent(new Event("Records of " + yyyymm + " reviewed"));
         return res;
     }
 

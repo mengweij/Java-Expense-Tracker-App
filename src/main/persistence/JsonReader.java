@@ -25,6 +25,7 @@ public class JsonReader {
     public BalanceSheet read() throws IOException {
         String jsonData = readFile(storeAddress);
         JSONObject json = new JSONObject(jsonData);
+        EventLog.getInstance().logEvent(new Event("Data loaded"));
         return parseBalanceSheet(json);
     }
 
