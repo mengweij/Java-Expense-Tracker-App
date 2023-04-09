@@ -19,8 +19,8 @@ import java.io.IOException;
 public class ExpenseTrackerUI extends JFrame {
     private BackgroundDesktopPane desktop;
     private JInternalFrame mainMenu;
-    private JInternalFrame addExpenseMenu;
-    private JInternalFrame reviewMenu;
+    private AddExpenseUI addExpenseMenu;
+    private ReviewUI reviewMenu;
     private BalanceSheet bs;
     private JsonReader jsonReader;
     private JsonWriter jsonWriter;
