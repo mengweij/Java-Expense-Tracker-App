@@ -1,11 +1,11 @@
 {
     "incomes": [{
-        "dateTime": "2023-03-15T12:05:24.180660",
+        "dateTime": "2023-04-20T23:19:20.732452",
         "amount": 100,
         "category": "SALARY"
     }],
     "expenses": [{
-        "dateTime": "2023-03-15T12:05:24.179364",
+        "dateTime": "2023-04-20T23:19:20.730937",
         "amount": 50,
         "category": "FOOD"
     }]
